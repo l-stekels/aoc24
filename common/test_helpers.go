@@ -10,7 +10,7 @@ func AssertEqualSlices[T int | string](t *testing.T, a, b []T) {
 	}
 	for i := range a {
 		if a[i] != b[i] {
-			t.Errorf("slices differ at index %d: got %d, want %d", i, a[i], b[i])
+			t.Errorf("slices differ at index %v: got %v, want %v", i, a[i], b[i])
 		}
 	}
 }
