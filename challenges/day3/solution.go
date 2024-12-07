@@ -51,5 +51,35 @@ func SolvePart1(input SolutionInput) int {
 func SolvePart2(input SolutionInput) int {
 	result := 0
 
+	doMultiply := true
+	numberRegexp := regexp.MustCompile(`\d{1,3}`)
+	for _, command := range input.Commands {
+		// Check if command is "do()"
+		if command == "do()" {
+			doMultiply = true
+		}
+		// Check if command is "don't()"
+		if command == "don't()" {
+			doMultiply = false
+		}
+		if !doMultiply {
+			continue
+		}
+		matches := numberRegexp.FindAllString(command, -1)
+		// This should solve issues when the command is "do()" or "don't()"
+		if len(matches) != 2 {
+			continue
+		}
+		first, err := strconv.Atoi(matches[0])
+		if err != nil {
+			panic(err)
+		}
+		second, err := strconv.Atoi(matches[1])
+		if err != nil {
+			panic(err)
+		}
+		result += first * second
+	}
+
 	return result
 }
