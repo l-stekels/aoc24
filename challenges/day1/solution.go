@@ -1,6 +1,7 @@
 package day1
 
 import (
+	"advent2024/common"
 	"fmt"
 	"sort"
 	"strconv"
@@ -61,7 +62,7 @@ func SolvePart1(input SolutionInput) int {
 	var result int
 	for i := 0; i < len(input.LeftColumn); i++ {
 		var distance int
-		distance = absDiff(input.LeftColumn[i], input.RightColumn[i])
+		distance = common.AbsDiff(input.LeftColumn[i], input.RightColumn[i])
 		result += distance
 	}
 
@@ -81,13 +82,6 @@ func SolvePart2(input SolutionInput) int {
 	}
 
 	return similarityScore
-}
-
-func absDiff(x, y int) int {
-	if x > y {
-		return x - y
-	}
-	return y - x
 }
 
 func countOccurrences(needle int, haystack []int) int {

@@ -1,6 +1,7 @@
 package day1
 
 import (
+	"advent2024/common"
 	"testing"
 )
 
@@ -21,8 +22,8 @@ func TestParser_CreateSolutionInput(t *testing.T) {
 		t.Fatalf("Validate failed: %v", err)
 	}
 
-	assertEqualIntSlices(t, result.LeftColumn, expected.LeftColumn)
-	assertEqualIntSlices(t, result.RightColumn, expected.RightColumn)
+	common.AssertEqualIntSlices(t, result.LeftColumn, expected.LeftColumn)
+	common.AssertEqualIntSlices(t, result.RightColumn, expected.RightColumn)
 }
 
 func Test_SolvePart1(t *testing.T) {
@@ -50,16 +51,5 @@ func Test_SolvePart2(t *testing.T) {
 
 	if result != expected {
 		t.Errorf("SolvePart1 failed: got %d, want %d", result, expected)
-	}
-}
-
-func assertEqualIntSlices(t *testing.T, a, b []int) {
-	if len(a) != len(b) {
-		t.Errorf("slices have different lengths: got %d, want %d", len(a), len(b))
-	}
-	for i := range a {
-		if a[i] != b[i] {
-			t.Errorf("slices differ at index %d: got %d, want %d", i, a[i], b[i])
-		}
 	}
 }

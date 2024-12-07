@@ -40,3 +40,12 @@ func ReadInput[T SolutionInput](
 
 	return parser.CreateSolutionInput(normalizedContent)
 }
+
+// AbsDiff returns the absolute difference between two integers.
+// For example, AbsDiff(3, 5) returns 2, and AbsDiff(5, 3) also returns 2.
+func AbsDiff(x, y int) int {
+	if x > y {
+		return x - y
+	}
+	return y - x
+}
