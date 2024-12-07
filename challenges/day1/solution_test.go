@@ -22,8 +22,8 @@ func TestParser_CreateSolutionInput(t *testing.T) {
 		t.Fatalf("Validate failed: %v", err)
 	}
 
-	common.AssertEqualIntSlices(t, result.LeftColumn, expected.LeftColumn)
-	common.AssertEqualIntSlices(t, result.RightColumn, expected.RightColumn)
+	common.AssertEqualSlices[int](t, result.LeftColumn, expected.LeftColumn)
+	common.AssertEqualSlices[int](t, result.RightColumn, expected.RightColumn)
 }
 
 func Test_SolvePart1(t *testing.T) {

@@ -7,6 +7,7 @@ type ChallengeInput string
 const (
 	Day1 ChallengeDay = "day1"
 	Day2 ChallengeDay = "day2"
+	Day3 ChallengeDay = "day3"
 )
 
 const (

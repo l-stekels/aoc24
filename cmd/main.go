@@ -3,6 +3,7 @@ package main
 import (
 	"advent2024/challenges/day1"
 	day2 "advent2024/challenges/day2"
+	day3 "advent2024/challenges/day3"
 	"advent2024/common"
 	"fmt"
 	"github.com/manifoldco/promptui"
@@ -29,6 +30,7 @@ func main() {
 	daySolutions := map[int]func() error{
 		1: createSolutionFunc[day1.SolutionInput](baseDir, common.Day1, common.Input1, &day1.Parser{}, day1.SolvePart1, day1.SolvePart2),
 		2: createSolutionFunc[day2.SolutionInput](baseDir, common.Day2, common.Input1, &day2.Parser{}, day2.SolvePart1, day2.SolvePart2),
+		3: createSolutionFunc[day3.SolutionInput](baseDir, common.Day3, common.Input1, &day3.Parser{}, day3.SolvePart1, day3.SolvePart2),
 	}
 
 	app.Action = func(context *cli.Context) error {

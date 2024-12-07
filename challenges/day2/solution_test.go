@@ -467,7 +467,7 @@ func Test_removeIndexFromSlice(t *testing.T) {
 	for _, tt := range tests {
 		t.Run("", func(t *testing.T) {
 			result := removeIndexFromSlice(tt.index, tt.slice)
-			common.AssertEqualIntSlices(t, result, tt.expected)
+			common.AssertEqualSlices[int](t, result, tt.expected)
 		})
 	}
 }

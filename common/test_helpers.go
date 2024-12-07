@@ -2,8 +2,8 @@ package common
 
 import "testing"
 
-// AssertEqualIntSlices checks if two slices of integers are equal.
-func AssertEqualIntSlices(t *testing.T, a, b []int) {
+// AssertEqualSlices checks if two slices are equal.
+func AssertEqualSlices[T int | string](t *testing.T, a, b []T) {
 	t.Helper()
 	if len(a) != len(b) {
 		t.Errorf("slices have different lengths: got %q, want %q", a, b)
@@ -22,6 +22,6 @@ func AssertEqual2DIntSlices(t *testing.T, a, b [][]int) {
 		t.Errorf("slices have different lengths: got %q, want %q", a, b)
 	}
 	for i := range a {
-		AssertEqualIntSlices(t, a[i], b[i])
+		AssertEqualSlices[int](t, a[i], b[i])
 	}
 }
