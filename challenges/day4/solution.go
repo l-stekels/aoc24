@@ -78,9 +78,7 @@ func SolvePart2(input SolutionInput) int {
 			if input.Grid[i][j] != 'A' {
 				continue
 			}
-			// Build a 3x3 grid around the 'A' character
-			//but make sure that the 'A' character is not on the edge of the grid
-			//continue if the 'A' character is on the edge of the grid
+			// Continue if the 'A' character is on the edge of the grid
 			if i-1 < 0 || i+1 >= len(input.Grid) || j-1 < 0 || j+1 >= len(input.Grid[0]) {
 				continue
 			}

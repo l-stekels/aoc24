@@ -11,6 +11,7 @@ import (
 	"github.com/urfave/cli/v2"
 	"os"
 	"strconv"
+	"time"
 )
 
 func main() {
@@ -88,9 +89,15 @@ func createSolutionFunc[T common.SolutionInput](
 			return err
 		}
 		fmt.Println("Part 1:")
+		part1Start := time.Now()
 		fmt.Printf("%d\n", solvePart1(input))
+		duration := time.Since(part1Start)
+		fmt.Printf("Time taken: %.6f ms\n", float64(duration.Nanoseconds())/1e6)
 		fmt.Println("Part 2:")
+		part2Start := time.Now()
 		fmt.Printf("%d\n", solvePart2(input))
+		duration = time.Since(part2Start)
+		fmt.Printf("Time taken: %.6f ms\n", float64(duration.Nanoseconds())/1e6)
 		return nil
 	}
 }
