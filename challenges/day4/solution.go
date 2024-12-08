@@ -72,5 +72,76 @@ func SolvePart1(input SolutionInput) int {
 func SolvePart2(input SolutionInput) int {
 	result := 0
 
+	for i := 0; i < len(input.Grid); i++ {
+		for j := 0; j < len(input.Grid[0]); j++ {
+			// Technically, I only need to check neighbours of A characters
+			if input.Grid[i][j] != 'A' {
+				continue
+			}
+			// Build a 3x3 grid around the 'A' character
+			//but make sure that the 'A' character is not on the edge of the grid
+			//continue if the 'A' character is on the edge of the grid
+			if i-1 < 0 || i+1 >= len(input.Grid) || j-1 < 0 || j+1 >= len(input.Grid[0]) {
+				continue
+			}
+			// Otherwise, build the 3x3 grid with 'A' in the middle
+			// and check if the pattern is found
+			xmasGrid := [][]rune{
+				{input.Grid[i-1][j-1], input.Grid[i-1][j], input.Grid[i-1][j+1]},
+				{input.Grid[i][j-1], input.Grid[i][j], input.Grid[i][j+1]},
+				{input.Grid[i+1][j-1], input.Grid[i+1][j], input.Grid[i+1][j+1]},
+			}
+			if checkXMASPattern(xmasGrid) {
+				result++
+			}
+
+		}
+	}
+
 	return result
+}
+
+func checkXMASPattern(grid [][]rune) bool {
+	// I do not care about all the runes, 'A' will always be in the middle and I already know that,
+	//so I only care about the corner runes
+	topLeftCorner := grid[0][0]
+	topRightCorner := grid[0][2]
+	bottomLeftCorner := grid[2][0]
+	bottomRightCorner := grid[2][2]
+	// There are four possible patterns
+	topLeftM := topLeftCorner == 'M'
+	topLeftS := topLeftCorner == 'S'
+	topRightS := topRightCorner == 'S'
+	topRightM := topRightCorner == 'M'
+	bottomRightS := bottomRightCorner == 'S'
+	bottomRightM := bottomRightCorner == 'M'
+	bottomLeftM := bottomLeftCorner == 'M'
+	bottomLeftS := bottomLeftCorner == 'S'
+
+	// M . S
+	// . A .
+	// M . S
+	if topLeftM && topRightS && bottomLeftM && bottomRightS {
+		return true
+	}
+	// S . M
+	// . A .
+	// S . M
+	if topLeftS && topRightM && bottomLeftS && bottomRightM {
+		return true
+	}
+	// S . S
+	// . A .
+	// M . M
+	if topLeftS && topRightS && bottomLeftM && bottomRightM {
+		return true
+	}
+	// M . M
+	// . A .
+	// S . S
+	if topLeftM && topRightM && bottomLeftS && bottomRightS {
+		return true
+	}
+
+	return false
 }

@@ -96,9 +96,66 @@ func Test_SolvePart2(t *testing.T) {
 		expected int
 	}{
 		{
-			name:     "Example",
-			input:    SolutionInput{},
-			expected: 0,
+			name: "Simple 1",
+			input: SolutionInput{
+				Grid: [][]rune{
+					{'M', '.', 'S'},
+					{'.', 'A', '.'},
+					{'M', '.', 'S'},
+				},
+			},
+			expected: 1,
+		},
+		{
+			name: "Simple 2",
+			input: SolutionInput{
+				Grid: [][]rune{
+					{'M', '.', 'M'},
+					{'.', 'A', '.'},
+					{'S', '.', 'S'},
+				},
+			},
+			expected: 1,
+		},
+		{
+			name: "Simple 3",
+			input: SolutionInput{
+				Grid: [][]rune{
+					{'S', '.', 'M'},
+					{'.', 'A', '.'},
+					{'S', '.', 'M'},
+				},
+			},
+			expected: 1,
+		},
+		{
+			name: "Simple 4",
+			input: SolutionInput{
+				Grid: [][]rune{
+					{'S', '.', 'S'},
+					{'.', 'A', '.'},
+					{'M', '.', 'M'},
+				},
+			},
+			expected: 1,
+		},
+		{
+			name: "Example",
+			input: SolutionInput{
+				Grid: [][]rune{
+					{'.', 'M', '.', 'S', '.', '.', '.', '.', '.', '.'},
+					{'.', '.', 'A', '.', '.', 'M', 'S', 'M', 'S', '.'},
+					{'.', 'M', '.', 'S', '.', 'M', 'A', 'A', '.', '.'},
+					{'.', '.', 'A', '.', 'A', 'S', 'M', 'S', 'M', '.'},
+					{'.', 'M', '.', 'S', '.', 'M', '.', '.', '.', '.'},
+					{'.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
+					{'S', '.', 'S', '.', 'S', '.', 'S', '.', 'S', '.'},
+					{'.', 'A', '.', 'A', '.', 'A', '.', 'A', '.', '.'},
+					{'M', '.', 'M', '.', 'M', '.', 'M', '.', 'M', '.'},
+					{'.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
+				},
+			},
+			expected: 9,
 		},
 	}
 
