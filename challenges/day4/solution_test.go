@@ -1,23 +1,13 @@
-package day3
+package day4
 
 import (
-	"advent2024/common"
 	"testing"
 )
 
 func TestParser_CreateSolutionInput(t *testing.T) {
 	parser := &Parser{}
-	input := "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"
-	expected := SolutionInput{
-		Commands: []string{
-			"mul(2,4)",
-			"don't()",
-			"mul(5,5)",
-			"mul(11,8)",
-			"do()",
-			"mul(8,5)",
-		},
-	}
+	input := ""
+	expected := SolutionInput{}
 
 	result, err := parser.CreateSolutionInput(input)
 	if err != nil {
@@ -28,7 +18,9 @@ func TestParser_CreateSolutionInput(t *testing.T) {
 		t.Fatalf("Validate failed: %v", err)
 	}
 
-	common.AssertEqualSlices[string](t, result.Commands, expected.Commands)
+	if expected != result {
+		t.Errorf("CreateSolutionInput failed: got %v, want %v", result, expected)
+	}
 }
 
 func Test_SolvePart1(t *testing.T) {
@@ -38,18 +30,9 @@ func Test_SolvePart1(t *testing.T) {
 		expected int
 	}{
 		{
-			name: "Example",
-			input: SolutionInput{
-				Commands: []string{
-					"mul(2,4)",
-					"don't()",
-					"mul(5,5)",
-					"mul(11,8)",
-					"do()",
-					"mul(8,5)",
-				},
-			},
-			expected: 161,
+			name:     "Example",
+			input:    SolutionInput{},
+			expected: 0,
 		},
 	}
 
@@ -70,18 +53,9 @@ func Test_SolvePart2(t *testing.T) {
 		expected int
 	}{
 		{
-			name: "Example",
-			input: SolutionInput{
-				Commands: []string{
-					"mul(2,4)",
-					"don't()",
-					"mul(5,5)",
-					"mul(11,8)",
-					"do()",
-					"mul(8,5)",
-				},
-			},
-			expected: 48,
+			name:     "Example",
+			input:    SolutionInput{},
+			expected: 0,
 		},
 	}
 
