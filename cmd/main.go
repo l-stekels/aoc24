@@ -5,6 +5,8 @@ import (
 	"advent2024/challenges/day2"
 	"advent2024/challenges/day3"
 	"advent2024/challenges/day4"
+	"advent2024/challenges/day5"
+	"advent2024/challenges/day6"
 	"advent2024/common"
 	"fmt"
 	"github.com/manifoldco/promptui"
@@ -30,10 +32,12 @@ func main() {
 	}
 
 	daySolutions := map[int]func() error{
-		1: createSolutionFunc[day1.SolutionInput](baseDir, common.Day1, common.Input1, &day1.Parser{}, day1.SolvePart1, day1.SolvePart2),
-		2: createSolutionFunc[day2.SolutionInput](baseDir, common.Day2, common.Input1, &day2.Parser{}, day2.SolvePart1, day2.SolvePart2),
-		3: createSolutionFunc[day3.SolutionInput](baseDir, common.Day3, common.Input1, &day3.Parser{}, day3.SolvePart1, day3.SolvePart2),
-		4: createSolutionFunc[day4.SolutionInput](baseDir, common.Day4, common.Input1, &day4.Parser{}, day4.SolvePart1, day4.SolvePart2),
+		1: createSolutionFunc[day1.SolutionInput](baseDir, common.Day1, common.Input, &day1.Parser{}, day1.SolvePart1, day1.SolvePart2),
+		2: createSolutionFunc[day2.SolutionInput](baseDir, common.Day2, common.Input, &day2.Parser{}, day2.SolvePart1, day2.SolvePart2),
+		3: createSolutionFunc[day3.SolutionInput](baseDir, common.Day3, common.Input, &day3.Parser{}, day3.SolvePart1, day3.SolvePart2),
+		4: createSolutionFunc[day4.SolutionInput](baseDir, common.Day4, common.Input, &day4.Parser{}, day4.SolvePart1, day4.SolvePart2),
+		5: createSolutionFunc[day5.SolutionInput](baseDir, common.Day5, common.Input, &day5.Parser{}, day5.SolvePart1, day5.SolvePart2),
+		6: createSolutionFunc[day6.SolutionInput](baseDir, common.Day6, common.Input, &day6.Parser{}, day6.SolvePart1, day6.SolvePart2),
 	}
 
 	app.Action = func(context *cli.Context) error {

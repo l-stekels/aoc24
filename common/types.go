@@ -9,10 +9,12 @@ const (
 	Day2 ChallengeDay = "day2"
 	Day3 ChallengeDay = "day3"
 	Day4 ChallengeDay = "day4"
+	Day5 ChallengeDay = "day5"
+	Day6 ChallengeDay = "day6"
 )
 
 const (
-	Input1 ChallengeInput = "input1"
+	Input ChallengeInput = "input"
 )
 
 func (d ChallengeDay) String() string {
