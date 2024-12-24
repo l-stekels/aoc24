@@ -27,15 +27,21 @@ type SolutionInput struct {
 	Map [][]rune
 }
 
-type Set struct {
-	data map[Position]bool
+type Set[T comparable] struct {
+	data map[T]bool
 }
 
-func (s Set) Add(pos Position) {
-	_, ok := s.data[pos]
+func (s *Set[T]) Add(element T) {
+	_, ok := s.data[element]
 	if !ok {
-		s.data[pos] = true
+		s.data[element] = true
 	}
+}
+
+func (s *Set[T]) contains(element T) bool {
+	_, ok := s.data[element]
+
+	return ok
 }
 
 type Position struct {
@@ -124,7 +130,7 @@ func (s SolutionInput) Validate() error {
 }
 
 func SolvePart1(input SolutionInput) int {
-	visited := Set{data: map[Position]bool{}}
+	visited := Set[Position]{data: map[Position]bool{}}
 	guard, err := findGuard(input.Map)
 	if err != nil {
 		panic(err)
@@ -176,8 +182,66 @@ func findGuard(m [][]rune) (Guard, error) {
 	return Guard{}, fmt.Errorf("guard not found")
 }
 
+type State struct {
+	pos Position
+	dir Direction
+}
+
+func detectLoop(grid [][]rune, guard Guard) bool {
+	visited := Set[State]{data: map[State]bool{}}
+
+	for {
+		if !isInBounds(guard.pos, grid) {
+			break
+		}
+		currentState := State{pos: guard.pos, dir: guard.dir}
+		alreadyVisited := visited.contains(currentState)
+		if alreadyVisited {
+			return true
+		}
+		visited.Add(currentState)
+		nextPosition := Position{x: guard.pos.x + uint(guard.dir.dx), y: guard.pos.y + uint(guard.dir.dy)}
+		if !isInBounds(nextPosition, grid) {
+			break
+		}
+		if grid[nextPosition.x][nextPosition.y] == '#' {
+			guard.TurnRight()
+			continue
+		}
+		guard.Move(nextPosition)
+	}
+
+	return false
+}
+
 func SolvePart2(input SolutionInput) int {
 	result := 0
+	startGuard, err := findGuard(input.Map)
+	if err != nil {
+		panic(err)
+	}
+
+	for x, row := range input.Map {
+		for y, cell := range row {
+			if cell == '#' || cell == '^' || cell == '>' || cell == 'v' || cell == '<' {
+				continue
+			}
+			testMap := copyMap(input.Map)
+			testMap[x][y] = '#'
+			if detectLoop(testMap, Guard{pos: startGuard.pos, dir: startGuard.dir, facing: startGuard.facing}) {
+				result++
+			}
+		}
+	}
+
+	return result
+}
+
+func copyMap(m [][]rune) [][]rune {
+	var result [][]rune
+	for _, row := range m {
+		result = append(result, append([]rune{}, row...))
+	}
 
 	return result
 }
