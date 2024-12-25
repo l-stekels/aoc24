@@ -95,7 +95,7 @@ func Test_SolvePart2(t *testing.T) {
 					{terms: []int{11, 6, 16, 20}, testValue: 292},
 				},
 			},
-			expected: 0,
+			expected: 11387,
 		},
 	}
 

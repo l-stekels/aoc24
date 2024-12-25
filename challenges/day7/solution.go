@@ -81,10 +81,11 @@ func (s SolutionInput) Validate() error {
 
 func SolvePart1(input SolutionInput) uint64 {
 	var result uint64
+	operators := []rune{'+', '*'}
 
 	for _, equation := range input.equations {
 		testValue := equation.testValue
-		if isSolvable(equation.terms, testValue) {
+		if isSolvable(equation.terms, testValue, operators) {
 			result = result + equation.testValue
 		}
 	}
@@ -92,8 +93,7 @@ func SolvePart1(input SolutionInput) uint64 {
 	return result
 }
 
-func isSolvable(numbers []int, testValue uint64) bool {
-	operators := []rune{'+', '*'}
+func isSolvable(numbers []int, testValue uint64, operators []rune) bool {
 	operatorSets := generateOperatorSets(operators, len(numbers)-1)
 
 	for _, set := range operatorSets {
@@ -115,6 +115,11 @@ func evaluateExpression(numbers []int, operators []rune) uint64 {
 			result = result + next
 		case '*':
 			result = result * next
+		case '|':
+			resultStr := strconv.FormatUint(result, 10)
+			nextStr := strconv.FormatUint(next, 10)
+			concatenated, _ := strconv.ParseUint(resultStr+nextStr, 10, 64)
+			result = concatenated
 		}
 	}
 
@@ -143,7 +148,15 @@ func generateOperatorSets(operators []rune, length int) [][]rune {
 }
 
 func SolvePart2(input SolutionInput) uint64 {
-	result := uint64(0)
+	var result uint64
+	operators := []rune{'+', '*', '|'}
+
+	for _, equation := range input.equations {
+		testValue := equation.testValue
+		if isSolvable(equation.terms, testValue, operators) {
+			result = result + equation.testValue
+		}
+	}
 
 	return result
 }
