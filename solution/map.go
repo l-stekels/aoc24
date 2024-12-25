@@ -13,6 +13,7 @@ import (
 	"advent2024/challenges/day9"
 	"advent2024/common"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -67,12 +68,43 @@ func createSolutionFunc[T common.SolutionInput, R Number](
 		part1Start := time.Now()
 		fmt.Printf("%v\n", solvePart1(input))
 		duration := time.Since(part1Start)
-		fmt.Printf("Time taken: %.6f ms\n", float64(duration.Nanoseconds())/1e6)
+		fmt.Printf("Time taken: %s\n", formatDuration(duration))
 		fmt.Println("Part 2:")
 		part2Start := time.Now()
 		fmt.Printf("%v\n", solvePart2(input))
 		duration = time.Since(part2Start)
-		fmt.Printf("Time taken: %.6f ms\n", float64(duration.Nanoseconds())/1e6)
+		fmt.Printf("Time taken: %s\n", formatDuration(duration))
 		return nil
 	}
+}
+
+func formatDuration(d time.Duration) string {
+	nanoseconds := d.Nanoseconds()
+
+	if nanoseconds == 0 {
+		return "0ns"
+	}
+
+	seconds := nanoseconds / 1e9
+	nanoseconds = nanoseconds % 1e9
+	milliseconds := nanoseconds / 1e6
+	nanoseconds = nanoseconds % 1e6
+	microseconds := nanoseconds / 1e3
+	nanoseconds = nanoseconds % 1e3
+
+	var parts []string
+	if seconds > 0 {
+		parts = append(parts, fmt.Sprintf("%ds", seconds))
+	}
+	if milliseconds > 0 {
+		parts = append(parts, fmt.Sprintf("%dms", milliseconds))
+	}
+	if microseconds > 0 {
+		parts = append(parts, fmt.Sprintf("%dµs", microseconds))
+	}
+	if nanoseconds > 0 {
+		parts = append(parts, fmt.Sprintf("%dns", nanoseconds))
+	}
+
+	return strings.Join(parts, " ")
 }
