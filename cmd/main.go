@@ -1,7 +1,6 @@
 package main
 
 import (
-	"advent2024/common"
 	"advent2024/solution"
 	"fmt"
 	"github.com/manifoldco/promptui"
@@ -25,7 +24,7 @@ func main() {
 		panic(err)
 	}
 
-	solutionMap := solution.NewSolutionMap[common.SolutionInput, int](baseDir)
+	solutionMap := solution.NewSolutionMap(baseDir)
 
 	app.Action = func(context *cli.Context) error {
 		var dayNumber string

@@ -16,12 +16,12 @@ import (
 	"time"
 )
 
-type Map[T common.SolutionInput, R Number] struct {
+type Map struct {
 	daySolutions map[int]func() error
 }
 
-func NewSolutionMap[T common.SolutionInput, R Number](baseDir string) Map[T, R] {
-	return Map[T, R]{
+func NewSolutionMap(baseDir string) Map {
+	return Map{
 		daySolutions: map[int]func() error{
 			1:  createSolutionFunc[day1.SolutionInput, int](baseDir, common.Day1, common.Input, &day1.Parser{}, day1.SolvePart1, day1.SolvePart2),
 			2:  createSolutionFunc[day2.SolutionInput, int](baseDir, common.Day2, common.Input, &day2.Parser{}, day2.SolvePart1, day2.SolvePart2),
@@ -37,7 +37,7 @@ func NewSolutionMap[T common.SolutionInput, R Number](baseDir string) Map[T, R] 
 	}
 }
 
-func (s Map[T, R]) Run(day int) error {
+func (s Map) Run(day int) error {
 	solution, ok := s.daySolutions[day]
 	if !ok {
 		return fmt.Errorf("no solution for day %d", day)
