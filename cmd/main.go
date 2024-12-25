@@ -1,21 +1,13 @@
 package main
 
 import (
-	"advent2024/challenges/day1"
-	"advent2024/challenges/day2"
-	"advent2024/challenges/day3"
-	"advent2024/challenges/day4"
-	"advent2024/challenges/day5"
-	"advent2024/challenges/day6"
-	"advent2024/challenges/day7"
-	"advent2024/challenges/day8"
 	"advent2024/common"
+	"advent2024/solution"
 	"fmt"
 	"github.com/manifoldco/promptui"
 	"github.com/urfave/cli/v2"
 	"os"
 	"strconv"
-	"time"
 )
 
 func main() {
@@ -33,16 +25,7 @@ func main() {
 		panic(err)
 	}
 
-	daySolutions := map[int]func() error{
-		1: createSolutionFunc[day1.SolutionInput](baseDir, common.Day1, common.Input, &day1.Parser{}, day1.SolvePart1, day1.SolvePart2),
-		2: createSolutionFunc[day2.SolutionInput](baseDir, common.Day2, common.Input, &day2.Parser{}, day2.SolvePart1, day2.SolvePart2),
-		3: createSolutionFunc[day3.SolutionInput](baseDir, common.Day3, common.Input, &day3.Parser{}, day3.SolvePart1, day3.SolvePart2),
-		4: createSolutionFunc[day4.SolutionInput](baseDir, common.Day4, common.Input, &day4.Parser{}, day4.SolvePart1, day4.SolvePart2),
-		5: createSolutionFunc[day5.SolutionInput](baseDir, common.Day5, common.Input, &day5.Parser{}, day5.SolvePart1, day5.SolvePart2),
-		6: createSolutionFunc[day6.SolutionInput](baseDir, common.Day6, common.Input, &day6.Parser{}, day6.SolvePart1, day6.SolvePart2),
-		7: createSolutionFunc[day7.SolutionInput](baseDir, common.Day7, common.Input, &day7.Parser{}, day7.SolvePart1, day7.SolvePart2),
-		8: createSolutionFunc[day8.SolutionInput](baseDir, common.Day8, common.Input, &day8.Parser{}, day8.SolvePart1, day8.SolvePart2),
-	}
+	solutionMap := solution.NewSolutionMap[common.SolutionInput, int](baseDir)
 
 	app.Action = func(context *cli.Context) error {
 		var dayNumber string
@@ -64,52 +47,19 @@ func main() {
 				return fmt.Errorf("prompt failed: %v", err)
 			}
 		}
-
 		day, err := strconv.Atoi(dayNumber)
 		if err != nil {
 			return fmt.Errorf("invalid day number: %s", dayNumber)
 		}
-
-		if solution, exists := daySolutions[day]; exists {
-			return solution()
+		err = solutionMap.Run(day)
+		if err != nil {
+			return fmt.Errorf("no solution available for day %d", day)
 		}
-		return fmt.Errorf("no solution available for day %d", day)
+		return nil
 	}
 
 	err = app.Run(os.Args)
 	if err != nil {
 		fmt.Println(err)
-	}
-}
-
-type Number interface {
-	~int | ~uint64
-}
-
-func createSolutionFunc[T common.SolutionInput, R Number](
-	baseDir string,
-	day common.ChallengeDay,
-	input common.ChallengeInput,
-	parser common.SolutionParser[T],
-	solvePart1 func(T) R,
-	solvePart2 func(T) R,
-) func() error {
-	return func() error {
-		fmt.Printf("Day %s answers are:\n", day.String())
-		input, err := common.ReadInput[T](baseDir, day, input, parser)
-		if err != nil {
-			return err
-		}
-		fmt.Println("Part 1:")
-		part1Start := time.Now()
-		fmt.Printf("%v\n", solvePart1(input))
-		duration := time.Since(part1Start)
-		fmt.Printf("Time taken: %.6f ms\n", float64(duration.Nanoseconds())/1e6)
-		fmt.Println("Part 2:")
-		part2Start := time.Now()
-		fmt.Printf("%v\n", solvePart2(input))
-		duration = time.Since(part2Start)
-		fmt.Printf("Time taken: %.6f ms\n", float64(duration.Nanoseconds())/1e6)
-		return nil
 	}
 }

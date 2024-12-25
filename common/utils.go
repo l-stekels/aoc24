@@ -42,7 +42,7 @@ func ReadInput[T SolutionInput](
 }
 
 // AbsDiff returns the absolute difference between two integers.
-// For example, AbsDiff(3, 5) returns 2, and AbsDiff(5, 3) also returns 2.
+// For example, both AbsDiff(3, 5) and AbsDiff(5, 3) return 2.
 func AbsDiff(x, y int) int {
 	if x > y {
 		return x - y
