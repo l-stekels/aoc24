@@ -5,13 +5,16 @@ type ChallengeDay string
 type ChallengeInput string
 
 const (
-	Day1 ChallengeDay = "day1"
-	Day2 ChallengeDay = "day2"
-	Day3 ChallengeDay = "day3"
-	Day4 ChallengeDay = "day4"
-	Day5 ChallengeDay = "day5"
-	Day6 ChallengeDay = "day6"
-	Day7 ChallengeDay = "day7"
+	Day1  ChallengeDay = "day1"
+	Day2  ChallengeDay = "day2"
+	Day3  ChallengeDay = "day3"
+	Day4  ChallengeDay = "day4"
+	Day5  ChallengeDay = "day5"
+	Day6  ChallengeDay = "day6"
+	Day7  ChallengeDay = "day7"
+	Day8  ChallengeDay = "day8"
+	Day9  ChallengeDay = "day9"
+	Day10 ChallengeDay = "day10"
 )
 
 const (
