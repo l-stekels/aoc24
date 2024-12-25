@@ -7,6 +7,7 @@ import (
 	"advent2024/challenges/day4"
 	"advent2024/challenges/day5"
 	"advent2024/challenges/day6"
+	"advent2024/challenges/day7"
 	"advent2024/common"
 	"fmt"
 	"github.com/manifoldco/promptui"
@@ -38,6 +39,7 @@ func main() {
 		4: createSolutionFunc[day4.SolutionInput](baseDir, common.Day4, common.Input, &day4.Parser{}, day4.SolvePart1, day4.SolvePart2),
 		5: createSolutionFunc[day5.SolutionInput](baseDir, common.Day5, common.Input, &day5.Parser{}, day5.SolvePart1, day5.SolvePart2),
 		6: createSolutionFunc[day6.SolutionInput](baseDir, common.Day6, common.Input, &day6.Parser{}, day6.SolvePart1, day6.SolvePart2),
+		7: createSolutionFunc[day7.SolutionInput](baseDir, common.Day7, common.Input, &day7.Parser{}, day7.SolvePart1, day7.SolvePart2),
 	}
 
 	app.Action = func(context *cli.Context) error {
@@ -78,13 +80,17 @@ func main() {
 	}
 }
 
-func createSolutionFunc[T common.SolutionInput](
+type Number interface {
+	~int | ~uint64
+}
+
+func createSolutionFunc[T common.SolutionInput, R Number](
 	baseDir string,
 	day common.ChallengeDay,
 	input common.ChallengeInput,
 	parser common.SolutionParser[T],
-	solvePart1 func(T) int,
-	solvePart2 func(T) int,
+	solvePart1 func(T) R,
+	solvePart2 func(T) R,
 ) func() error {
 	return func() error {
 		fmt.Printf("Day %s answers are:\n", day.String())
@@ -94,12 +100,12 @@ func createSolutionFunc[T common.SolutionInput](
 		}
 		fmt.Println("Part 1:")
 		part1Start := time.Now()
-		fmt.Printf("%d\n", solvePart1(input))
+		fmt.Printf("%v\n", solvePart1(input))
 		duration := time.Since(part1Start)
 		fmt.Printf("Time taken: %.6f ms\n", float64(duration.Nanoseconds())/1e6)
 		fmt.Println("Part 2:")
 		part2Start := time.Now()
-		fmt.Printf("%d\n", solvePart2(input))
+		fmt.Printf("%v\n", solvePart2(input))
 		duration = time.Since(part2Start)
 		fmt.Printf("Time taken: %.6f ms\n", float64(duration.Nanoseconds())/1e6)
 		return nil
