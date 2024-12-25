@@ -49,3 +49,57 @@ func AbsDiff(x, y int) int {
 	}
 	return y - x
 }
+
+type Set[T comparable] struct {
+	data map[T]bool
+}
+
+func NewSet[T comparable]() Set[T] {
+	return Set[T]{data: map[T]bool{}}
+}
+
+func (s *Set[T]) Add(element T) {
+	if !s.Contains(element) {
+		s.data[element] = true
+	}
+}
+
+func (s *Set[T]) Contains(element T) bool {
+	_, ok := s.data[element]
+
+	return ok
+}
+
+func (s *Set[T]) Length() int {
+	return len(s.data)
+}
+
+func (s *Set[T]) Merge(other Set[T]) {
+	for element := range other.data {
+		s.Add(element)
+	}
+}
+
+type Point struct {
+	X, Y int
+}
+
+// Abs returns the absolute value of x.
+func Abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+
+	return x
+}
+
+// Gcd returns the greatest common divisor of x and y.
+func Gcd(x int, y int) int {
+	a := Abs(x)
+	b := Abs(y)
+	for b != 0 {
+		a, b = b, a%b
+	}
+
+	return a
+}

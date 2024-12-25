@@ -8,6 +8,7 @@ import (
 	"advent2024/challenges/day5"
 	"advent2024/challenges/day6"
 	"advent2024/challenges/day7"
+	"advent2024/challenges/day8"
 	"advent2024/common"
 	"fmt"
 	"github.com/manifoldco/promptui"
@@ -40,6 +41,7 @@ func main() {
 		5: createSolutionFunc[day5.SolutionInput](baseDir, common.Day5, common.Input, &day5.Parser{}, day5.SolvePart1, day5.SolvePart2),
 		6: createSolutionFunc[day6.SolutionInput](baseDir, common.Day6, common.Input, &day6.Parser{}, day6.SolvePart1, day6.SolvePart2),
 		7: createSolutionFunc[day7.SolutionInput](baseDir, common.Day7, common.Input, &day7.Parser{}, day7.SolvePart1, day7.SolvePart2),
+		8: createSolutionFunc[day8.SolutionInput](baseDir, common.Day8, common.Input, &day8.Parser{}, day8.SolvePart1, day8.SolvePart2),
 	}
 
 	app.Action = func(context *cli.Context) error {

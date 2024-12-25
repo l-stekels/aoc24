@@ -33,7 +33,7 @@ func TestParser_CreateSolutionInput(t *testing.T) {
 	for y, row := range expected.Map {
 		for x, cell := range row {
 			if result.Map[y][x] != cell {
-				t.Errorf("CreateSolution input: map cell incorrect at %v, want %v got %v", NewPosition(x, y), cell, result.Map[y][x])
+				t.Errorf("CreateSolution input: map cell incorrect at %v, want %v got %v", NewPoint(x, y), cell, result.Map[y][x])
 			}
 		}
 	}

@@ -1,6 +1,7 @@
 package day6
 
 import (
+	"advent2024/common"
 	"fmt"
 	"strings"
 	"time"
@@ -27,34 +28,6 @@ type SolutionInput struct {
 	Map [][]rune
 }
 
-type Set[T comparable] struct {
-	data map[T]bool
-}
-
-func (s *Set[T]) Add(element T) {
-	_, ok := s.data[element]
-	if !ok {
-		s.data[element] = true
-	}
-}
-
-func (s *Set[T]) contains(element T) bool {
-	_, ok := s.data[element]
-
-	return ok
-}
-
-type Position struct {
-	x, y uint
-}
-
-func NewPosition(x int, y int) *Position {
-	if x < 0 || y < 0 {
-		panic(fmt.Sprintf("Invalid position: %d, %d", x, y))
-	}
-	return &Position{x: uint(x), y: uint(y)}
-}
-
 type Direction struct {
 	dx, dy int
 }
@@ -76,7 +49,7 @@ const (
 )
 
 type Guard struct {
-	pos    Position
+	pos    common.Point
 	dir    Direction
 	facing FacingDirection
 }
@@ -98,7 +71,7 @@ func (g *Guard) TurnRight() {
 	}
 }
 
-func (g *Guard) Move(pos Position) {
+func (g *Guard) Move(pos common.Point) {
 	g.pos = pos
 }
 
@@ -106,11 +79,11 @@ func clearScreen() {
 	print("\033[H\033[2J")
 }
 
-func printGrid(grid [][]rune, visited map[Position]bool, guard Guard) {
+func printGrid(grid [][]rune, visited map[common.Point]bool, guard Guard) {
 	clearScreen()
 	for x := range grid {
 		for y := range grid[x] {
-			pos := *NewPosition(x, y)
+			pos := common.Point{X: x, Y: y}
 			if visited[pos] {
 				fmt.Print("X")
 			} else if guard.pos == pos {
@@ -130,7 +103,7 @@ func (s SolutionInput) Validate() error {
 }
 
 func SolvePart1(input SolutionInput) int {
-	visited := Set[Position]{data: map[Position]bool{}}
+	visited := common.NewSet[common.Point]()
 	guard, err := findGuard(input.Map)
 	if err != nil {
 		panic(err)
@@ -143,11 +116,11 @@ func SolvePart1(input SolutionInput) int {
 		}
 		visited.Add(guard.pos)
 
-		nextPosition := Position{x: guard.pos.x + uint(guard.dir.dx), y: guard.pos.y + uint(guard.dir.dy)}
+		nextPosition := common.Point{X: guard.pos.X + guard.dir.dx, Y: guard.pos.Y + guard.dir.dy}
 		if !isInBounds(nextPosition, input.Map) {
 			break
 		}
-		if input.Map[nextPosition.x][nextPosition.y] == '#' {
+		if input.Map[nextPosition.X][nextPosition.Y] == '#' {
 			guard.TurnRight()
 			continue
 		}
@@ -156,25 +129,29 @@ func SolvePart1(input SolutionInput) int {
 	}
 	//printGrid(input.Map, visited.data, guard)
 
-	return len(visited.data)
+	return visited.Length()
 }
 
-func isInBounds(pos Position, m [][]rune) bool {
-	return pos.x < uint(len(m[0])) && pos.y < uint(len(m))
+func isInBounds(pos common.Point, m [][]rune) bool {
+	if pos.X < 0 || pos.Y < 0 {
+		return false
+	}
+	return pos.X < len(m[0]) && pos.Y < len(m)
 }
 
 func findGuard(m [][]rune) (Guard, error) {
 	for x, row := range m {
 		for y, cell := range row {
+			point := common.Point{X: x, Y: y}
 			switch cell {
 			case '^':
-				return Guard{*NewPosition(x, y), Up, UpFacing}, nil
+				return Guard{pos: point, dir: Up, facing: UpFacing}, nil
 			case '>':
-				return Guard{*NewPosition(x, y), Right, RightFacing}, nil
+				return Guard{point, Right, RightFacing}, nil
 			case 'v':
-				return Guard{*NewPosition(x, y), Down, DownFacing}, nil
+				return Guard{point, Down, DownFacing}, nil
 			case '<':
-				return Guard{*NewPosition(x, y), Left, LeftFacing}, nil
+				return Guard{point, Left, LeftFacing}, nil
 			}
 		}
 	}
@@ -183,28 +160,28 @@ func findGuard(m [][]rune) (Guard, error) {
 }
 
 type State struct {
-	pos Position
+	pos common.Point
 	dir Direction
 }
 
 func detectLoop(grid [][]rune, guard Guard) bool {
-	visited := Set[State]{data: map[State]bool{}}
+	visited := common.NewSet[State]()
 
 	for {
 		if !isInBounds(guard.pos, grid) {
 			break
 		}
 		currentState := State{pos: guard.pos, dir: guard.dir}
-		alreadyVisited := visited.contains(currentState)
+		alreadyVisited := visited.Contains(currentState)
 		if alreadyVisited {
 			return true
 		}
 		visited.Add(currentState)
-		nextPosition := Position{x: guard.pos.x + uint(guard.dir.dx), y: guard.pos.y + uint(guard.dir.dy)}
+		nextPosition := common.Point{X: guard.pos.X + guard.dir.dx, Y: guard.pos.Y + guard.dir.dy}
 		if !isInBounds(nextPosition, grid) {
 			break
 		}
-		if grid[nextPosition.x][nextPosition.y] == '#' {
+		if grid[nextPosition.X][nextPosition.Y] == '#' {
 			guard.TurnRight()
 			continue
 		}
