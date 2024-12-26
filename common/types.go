@@ -15,6 +15,9 @@ const (
 	Day8  ChallengeDay = "day8"
 	Day9  ChallengeDay = "day9"
 	Day10 ChallengeDay = "day10"
+	Day11 ChallengeDay = "day11"
+	Day12 ChallengeDay = "day12"
+	Day13 ChallengeDay = "day13"
 )
 
 const (

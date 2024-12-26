@@ -3,6 +3,9 @@ package solution
 import (
 	"advent2024/challenges/day1"
 	"advent2024/challenges/day10"
+	"advent2024/challenges/day11"
+	"advent2024/challenges/day12"
+	"advent2024/challenges/day13"
 	"advent2024/challenges/day2"
 	"advent2024/challenges/day3"
 	"advent2024/challenges/day4"
@@ -34,6 +37,9 @@ func NewSolutionMap(baseDir string) Map {
 			8:  createSolutionFunc[day8.SolutionInput, int](baseDir, common.Day8, common.Input, &day8.Parser{}, day8.SolvePart1, day8.SolvePart2),
 			9:  createSolutionFunc[day9.SolutionInput, uint64](baseDir, common.Day9, common.Input, &day9.Parser{}, day9.SolvePart1, day9.SolvePart2),
 			10: createSolutionFunc[day10.SolutionInput, int](baseDir, common.Day10, common.Input, &day10.Parser{}, day10.SolvePart1, day10.SolvePart2),
+			11: createSolutionFunc[day11.SolutionInput, int](baseDir, common.Day11, common.Input, &day11.Parser{}, day11.SolvePart1, day11.SolvePart2),
+			12: createSolutionFunc[day12.SolutionInput, int](baseDir, common.Day12, common.Input, &day12.Parser{}, day12.SolvePart1, day12.SolvePart2),
+			13: createSolutionFunc[day13.SolutionInput, int](baseDir, common.Day13, common.Input, &day13.Parser{}, day13.SolvePart1, day13.SolvePart2),
 		},
 	}
 }
