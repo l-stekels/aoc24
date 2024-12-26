@@ -42,22 +42,19 @@ func TestParser_CreateSolutionInput(t *testing.T) {
 
 func Test_SolvePart1(t *testing.T) {
 	tests := []struct {
-		name           string
-		input          SolutionInput
-		expected       int
-		expectedString string
+		name     string
+		input    SolutionInput
+		expected uint64
 	}{
 		{
-			name:           "Example",
-			input:          getExampleInput(1),
-			expected:       60,
-			expectedString: "022111222......",
+			name:     "Example",
+			input:    getExampleInput(1),
+			expected: uint64(60),
 		},
 		{
-			name:           "Example",
-			input:          getExampleInput(2),
-			expected:       1928,
-			expectedString: "0099811188827773336446555566..............",
+			name:     "Example",
+			input:    getExampleInput(2),
+			expected: uint64(1928),
 		},
 	}
 
@@ -75,12 +72,17 @@ func Test_SolvePart2(t *testing.T) {
 	tests := []struct {
 		name     string
 		input    SolutionInput
-		expected int
+		expected uint64
 	}{
 		{
 			name:     "Example",
 			input:    getExampleInput(1),
-			expected: 6,
+			expected: uint64(132),
+		},
+		{
+			name:     "Example",
+			input:    getExampleInput(2),
+			expected: uint64(2858),
 		},
 	}
 

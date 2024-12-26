@@ -32,7 +32,7 @@ func NewSolutionMap(baseDir string) Map {
 			6:  createSolutionFunc[day6.SolutionInput, int](baseDir, common.Day6, common.Input, &day6.Parser{}, day6.SolvePart1, day6.SolvePart2),
 			7:  createSolutionFunc[day7.SolutionInput, uint64](baseDir, common.Day7, common.Input, &day7.Parser{}, day7.SolvePart1, day7.SolvePart2),
 			8:  createSolutionFunc[day8.SolutionInput, int](baseDir, common.Day8, common.Input, &day8.Parser{}, day8.SolvePart1, day8.SolvePart2),
-			9:  createSolutionFunc[day9.SolutionInput, int](baseDir, common.Day9, common.Input, &day9.Parser{}, day9.SolvePart1, day9.SolvePart2),
+			9:  createSolutionFunc[day9.SolutionInput, uint64](baseDir, common.Day9, common.Input, &day9.Parser{}, day9.SolvePart1, day9.SolvePart2),
 			10: createSolutionFunc[day10.SolutionInput, int](baseDir, common.Day10, common.Input, &day10.Parser{}, day10.SolvePart1, day10.SolvePart2),
 		},
 	}

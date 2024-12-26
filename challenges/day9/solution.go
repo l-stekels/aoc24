@@ -7,6 +7,9 @@ import (
 
 type Parser struct{}
 
+// In hindsight this whole solution should have used immutable data structures instead of changing the input with pointers
+// Oh well
+
 func (p Parser) CreateSolutionInput(content string) (SolutionInput, error) {
 	result := SolutionInput{}
 	stringNumbers := strings.Split(content, "")
@@ -76,6 +79,9 @@ func (segment *DiskSegment) String() string {
 	if segment == nil {
 		return str
 	}
+	if segment.fileId > -1 {
+		str += "("
+	}
 	for i := 0; i < segment.length; i++ {
 		if segment.fileId == -1 {
 			str += "."
@@ -83,6 +89,10 @@ func (segment *DiskSegment) String() string {
 			str += strconv.Itoa(segment.fileId)
 		}
 	}
+	if segment.fileId > -1 {
+		str += ")"
+	}
+
 	return str
 }
 
@@ -116,18 +126,35 @@ func (segment *DiskSegment) FindRightmostSegment() *DiskSegment {
 	return segment.right.FindRightmostSegment()
 }
 
-func (segment *DiskSegment) CalculateChecksum() int {
+func (segment *DiskSegment) FindByFileId(fileId int) *DiskSegment {
+	if segment == nil {
+		return nil
+	}
+	var rightResult *DiskSegment
+	if segment.right != nil {
+		rightResult = segment.right.FindByFileId(fileId)
+	}
+	if rightResult != nil {
+		return rightResult
+	}
+	if segment.fileId == fileId {
+		return segment
+	}
+	return segment.left.FindByFileId(fileId)
+}
+
+func (segment *DiskSegment) CalculateChecksum() uint64 {
 	// We'll use a recursive helper function to traverse the file segments
 	// in order (left to right) and calculate the checksum
-	var calculateForSegment func(segment *DiskSegment) int
-	calculateForSegment = func(segment *DiskSegment) int {
+	var calculateForSegment func(segment *DiskSegment) uint64
+	calculateForSegment = func(segment *DiskSegment) uint64 {
 		if segment == nil {
 			return 0
 		}
 		leftSum := calculateForSegment(segment.left)
-		currentSum := 0
+		currentSum := uint64(0)
 		for pos := segment.start; pos < segment.start+segment.length; pos++ {
-			currentSum += pos * segment.fileId
+			currentSum += uint64(pos) * uint64(segment.fileId)
 		}
 		rightSum := calculateForSegment(segment.right)
 
@@ -162,6 +189,53 @@ func (segment *DiskSegment) RemoveSegment(position int) *DiskSegment {
 	segment.right = segment.right.RemoveSegment(successor.start)
 
 	return segment
+}
+
+func (segment *DiskSegment) findBestEmpty(fileSegmentLength int) *DiskSegment {
+	if segment == nil {
+		return nil
+	}
+	// Make sure that this works only on empty segments where file id is -1
+	if segment.fileId != -1 {
+		return nil
+	}
+
+	var findBest func(segment *DiskSegment, bestSoFar *DiskSegment) *DiskSegment
+	findBest = func(segment *DiskSegment, bestSoFar *DiskSegment) *DiskSegment {
+		if segment == nil {
+			return bestSoFar
+		}
+
+		// Always check left subtree first as it might contain better positions
+		bestSoFar = findBest(segment.left, bestSoFar)
+
+		// Check if this segment is a candidate
+		if segment.length >= fileSegmentLength {
+			if bestSoFar == nil || segment.start < bestSoFar.start {
+				bestSoFar = segment
+			}
+		}
+
+		// Check right subtree - it might still have better positions
+		return findBest(segment.right, bestSoFar)
+	}
+
+	bestEmpty := findBest(segment, nil)
+	return bestEmpty
+}
+
+func (segment *DiskSegment) Clone() *DiskSegment {
+	if segment == nil {
+		return nil
+	}
+
+	return &DiskSegment{
+		start:  segment.start,
+		length: segment.length,
+		fileId: segment.fileId,
+		left:   segment.left.Clone(),
+		right:  segment.right.Clone(),
+	}
 }
 
 func (s SolutionInput) Validate() error {
@@ -235,14 +309,37 @@ func (s SolutionInput) String() string {
 	return result.String()
 }
 
-func SolvePart1(input SolutionInput) int {
+func (s SolutionInput) insertSegment(segment *DiskSegment, target **DiskSegment) {
+	if *target == nil {
+		*target = segment
+	} else {
+		(*target).InsertSegment(segment)
+	}
+}
+
+func (s SolutionInput) Clone() SolutionInput {
+	result := SolutionInput{
+		totalLength: s.totalLength,
+	}
+	if s.fileSegment != nil {
+		result.fileSegment = s.fileSegment.Clone()
+	}
+	if s.emptySegment != nil {
+		result.emptySegment = s.emptySegment.Clone()
+	}
+
+	return result
+}
+
+func SolvePart1(input SolutionInput) uint64 {
+	res := input.Clone()
 	for {
-		if !compactStep(&input) {
+		if !compactStep(&res) {
 			break
 		}
 	}
 
-	return input.fileSegment.CalculateChecksum()
+	return res.fileSegment.CalculateChecksum()
 }
 
 func compactStep(input *SolutionInput) bool {
@@ -273,47 +370,97 @@ func compactStep(input *SolutionInput) bool {
 		remainingFile.start = rightMostFile.start
 		remainingFile.length = rightMostFile.length - blocksToMove
 		remainingFile.fileId = rightMostFile.fileId
-		if input.fileSegment == nil {
-			input.fileSegment = remainingFile
-		} else {
-			input.fileSegment.InsertSegment(remainingFile)
-		}
+		input.insertSegment(remainingFile, &input.fileSegment)
 	}
 	if blocksToMove < leftMostEmpty.length {
 		remainingEmpty := new(DiskSegment)
 		remainingEmpty.start = leftMostEmpty.start + blocksToMove
 		remainingEmpty.length = leftMostEmpty.length - blocksToMove
 		remainingEmpty.fileId = -1
-		if input.emptySegment == nil {
-			input.emptySegment = remainingEmpty
-		} else {
-			input.emptySegment.InsertSegment(remainingEmpty)
-		}
+		input.insertSegment(remainingEmpty, &input.emptySegment)
 	}
 	movedFile := new(DiskSegment)
 	movedFile.start = leftMostEmpty.start
 	movedFile.length = blocksToMove
 	movedFile.fileId = rightMostFile.fileId
-	if input.fileSegment == nil {
-		input.fileSegment = movedFile
-	} else {
-		input.fileSegment.InsertSegment(movedFile)
-	}
+	input.insertSegment(movedFile, &input.fileSegment)
 	newEmpty := new(DiskSegment)
 	newEmpty.start = rightMostFile.start + (rightMostFile.length - blocksToMove)
 	newEmpty.length = blocksToMove
 	newEmpty.fileId = -1
-	if input.emptySegment == nil {
-		input.emptySegment = newEmpty
-	} else {
-		input.emptySegment.InsertSegment(newEmpty)
-	}
+	input.insertSegment(newEmpty, &input.emptySegment)
 
 	return true
 }
 
-func SolvePart2(input SolutionInput) int {
-	result := 0
+func deFragment(input *SolutionInput, fileId int) {
+	if input.fileSegment == nil {
+		return
+	}
+	if input.emptySegment == nil {
+		return
+	}
+	// Fetch the file segment to move by its id
+	var fileSegment *DiskSegment
+	fileSegment = input.fileSegment.FindByFileId(fileId)
+	if fileSegment == nil {
+		return
+	}
+	fileSegmentStart := fileSegment.start
+	fileSegmentLength := fileSegment.length
+	fileSegmentId := fileSegment.fileId
+	// Find the best empty leftmost segment to move the file to
+	bestEmpty := input.emptySegment.findBestEmpty(fileSegmentLength)
+	if bestEmpty == nil {
+		return
+	}
+	bestEmptyStart := bestEmpty.start
+	bestEmptyLength := bestEmpty.length
+	// Do not move the file if it is already at the leftmost possible position
+	if bestEmptyStart > fileSegmentStart {
+		return
+	}
+	// Do not move the file if there is not enough space
+	if bestEmptyLength < fileSegmentLength {
+		return
+	}
+	input.fileSegment = input.fileSegment.RemoveSegment(fileSegmentStart)
+	input.emptySegment = input.emptySegment.RemoveSegment(bestEmptyStart)
+	// Create new file segment at the leftmost empty position
+	movedFile := &DiskSegment{
+		start:  bestEmptyStart,
+		length: fileSegmentLength,
+		fileId: fileSegmentId,
+	}
+	input.insertSegment(movedFile, &input.fileSegment)
+	// Create a new empty segment where the file was
+	newEmpty := &DiskSegment{
+		start:  fileSegmentStart,
+		length: fileSegmentLength,
+		fileId: -1,
+	}
+	input.insertSegment(newEmpty, &input.emptySegment)
+	// Check if there is empty space left and create a segment for it
+	if bestEmptyLength > fileSegmentLength {
+		remainingEmpty := &DiskSegment{
+			start:  movedFile.start + movedFile.length,
+			length: bestEmptyLength - movedFile.length,
+			fileId: -1,
+		}
+		input.insertSegment(remainingEmpty, &input.emptySegment)
+	}
 
-	return result
+	return
+}
+
+func SolvePart2(input SolutionInput) uint64 {
+	res := input.Clone()
+	// Pick the furthest right file segment
+	fileId := res.fileSegment.FindRightmostSegment().fileId
+	// start from the highest fileId and move down
+	for i := fileId; i >= 0; i-- {
+		deFragment(&res, i)
+	}
+
+	return res.fileSegment.CalculateChecksum()
 }
