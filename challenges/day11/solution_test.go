@@ -6,16 +6,23 @@ import (
 
 func TestParser_CreateSolutionInput(t *testing.T) {
 	parser := &Parser{}
-	input := ""
-	_ = createSolutionInput()
+	input := "125 17"
+	expected := createSolutionInput()
 
 	result, err := parser.CreateSolutionInput(input)
 	if err != nil {
 		t.Fatalf("CreateSolutionInput failed: %v", err)
 	}
-
 	if err := result.Validate(); err != nil {
 		t.Fatalf("Validate failed: %v", err)
+	}
+	if len(result.stones) != len(expected.stones) {
+		t.Errorf("CreateSolutionInput failed: got %d, want %d", len(result.stones), len(expected.stones))
+	}
+	for i, stone := range result.stones {
+		if stone != expected.stones[i] {
+			t.Errorf("CreateSolutionInput failed: got %d, want %d", stone, expected.stones[i])
+		}
 	}
 }
 
@@ -28,7 +35,7 @@ func Test_SolvePart1(t *testing.T) {
 		{
 			name:     "Example",
 			input:    createSolutionInput(),
-			expected: 0,
+			expected: 55312,
 		},
 	}
 
@@ -66,5 +73,10 @@ func Test_SolvePart2(t *testing.T) {
 }
 
 func createSolutionInput() SolutionInput {
-	return SolutionInput{}
+	return SolutionInput{
+		stones: []Stone{
+			{value: uint64(125)},
+			{value: uint64(17)},
+		},
+	}
 }
