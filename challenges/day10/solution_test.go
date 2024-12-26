@@ -36,7 +36,7 @@ func Test_SolvePart1(t *testing.T) {
 		{
 			name:     "Example",
 			input:    createSolutionInput(),
-			expected: 0,
+			expected: 36,
 		},
 	}
 
@@ -59,7 +59,22 @@ func Test_SolvePart2(t *testing.T) {
 		{
 			name:     "Example",
 			input:    createSolutionInput(),
-			expected: 0,
+			expected: 81,
+		},
+		{
+			name:     "Example 2",
+			input:    createSolutionInput(2),
+			expected: 3,
+		},
+		{
+			name:     "Example 3",
+			input:    createSolutionInput(3),
+			expected: 13,
+		},
+		{
+			name:     "Example 4",
+			input:    createSolutionInput(4),
+			expected: 227,
 		},
 	}
 
@@ -73,21 +88,79 @@ func Test_SolvePart2(t *testing.T) {
 	}
 }
 
-func createSolutionInput() SolutionInput {
-	return SolutionInput{
-		grid: Grid{
-			data: [][]int{
-				{8, 9, 0, 1, 0, 1, 2, 3},
-				{7, 8, 1, 2, 1, 8, 7, 4},
-				{8, 7, 4, 3, 0, 9, 6, 5},
-				{9, 6, 5, 4, 9, 8, 7, 4},
-				{4, 5, 6, 7, 8, 9, 0, 3},
-				{3, 2, 0, 1, 9, 0, 1, 2},
-				{0, 1, 3, 2, 9, 8, 0, 1},
-				{1, 0, 4, 5, 6, 7, 3, 2},
+func createSolutionInput(args ...int) SolutionInput {
+	if len(args) == 0 {
+		return SolutionInput{
+			grid: Grid{
+				data: [][]int{
+					{8, 9, 0, 1, 0, 1, 2, 3},
+					{7, 8, 1, 2, 1, 8, 7, 4},
+					{8, 7, 4, 3, 0, 9, 6, 5},
+					{9, 6, 5, 4, 9, 8, 7, 4},
+					{4, 5, 6, 7, 8, 9, 0, 3},
+					{3, 2, 0, 1, 9, 0, 1, 2},
+					{0, 1, 3, 2, 9, 8, 0, 1},
+					{1, 0, 4, 5, 6, 7, 3, 2},
+				},
+				rows: 8,
+				cols: 8,
 			},
-			rows: 8,
-			cols: 8,
-		},
+		}
 	}
+	var number int
+	if len(args) == 1 {
+		number = args[0]
+	}
+	switch number {
+	case 2:
+		return SolutionInput{
+			grid: Grid{
+				data: [][]int{
+					{-1, -1, -1, -1, -1, 0, -1},
+					{-1, -1, 4, 3, 2, 1, -1},
+					{-1, -1, 5, -1, -1, 2, -1},
+					{-1, -1, 6, 5, 4, 3, -1},
+					{-1, -1, 7, -1, -1, 4, -1},
+					{-1, -1, 8, 7, 6, 5, -1},
+					{-1, -1, 9, -1, -1, -1, -1},
+				},
+				rows: 7,
+				cols: 7,
+			},
+		}
+	case 3:
+		return SolutionInput{
+			grid: Grid{
+				data: [][]int{
+					{-1, -1, 9, 0, -1, -1, 9},
+					{-1, -1, -1, 1, -1, 9, 8},
+					{-1, -1, -1, 2, -1, -1, 7},
+					{6, 5, 4, 3, 4, 5, 6},
+					{7, 6, 5, -1, 9, 8, 7},
+					{8, 7, 6, -1, -1, -1, -1},
+					{9, 8, 7, -1, -1, -1, -1},
+				},
+				rows: 7,
+				cols: 7,
+			},
+		}
+	case 4:
+		return SolutionInput{
+			grid: Grid{
+				data: [][]int{
+					{0, 1, 2, 3, 4, 5},
+					{1, 2, 3, 4, 5, 6},
+					{2, 3, 4, 5, 6, 7},
+					{3, 4, 5, 6, 7, 8},
+					{4, -1, 6, 7, 8, 9},
+					{5, 6, 7, 8, 9, -1},
+				},
+				rows: 6,
+				cols: 6,
+			},
+		}
+	default:
+		panic("Invalid number")
+	}
+
 }

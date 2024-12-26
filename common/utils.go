@@ -70,7 +70,7 @@ func (s *Set[T]) Contains(element T) bool {
 	return ok
 }
 
-func (s *Set[T]) Length() int {
+func (s *Set[T]) Size() int {
 	return len(s.data)
 }
 

@@ -129,7 +129,7 @@ func SolvePart1(input SolutionInput) int {
 	}
 	//printGrid(input.Map, visited.data, guard)
 
-	return visited.Length()
+	return visited.Size()
 }
 
 func isInBounds(pos common.Point, m [][]rune) bool {
