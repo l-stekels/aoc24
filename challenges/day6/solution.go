@@ -4,7 +4,6 @@ import (
 	"advent2024/common"
 	"fmt"
 	"strings"
-	"time"
 )
 
 type Parser struct{}
@@ -75,29 +74,6 @@ func (g *Guard) Move(pos common.Point) {
 	g.pos = pos
 }
 
-func clearScreen() {
-	print("\033[H\033[2J")
-}
-
-func printGrid(grid [][]rune, visited map[common.Point]bool, guard Guard) {
-	clearScreen()
-	for x := range grid {
-		for y := range grid[x] {
-			pos := common.Point{X: x, Y: y}
-			if visited[pos] {
-				fmt.Print("X")
-			} else if guard.pos == pos {
-				fmt.Print(string(guard.facing))
-			} else {
-				fmt.Print(string(grid[x][y]))
-			}
-		}
-		fmt.Println()
-	}
-	fmt.Println()
-	time.Sleep(100 * time.Millisecond) // Add delay to make movement visible
-}
-
 func (s SolutionInput) Validate() error {
 	return nil
 }
@@ -108,7 +84,6 @@ func SolvePart1(input SolutionInput) int {
 	if err != nil {
 		panic(err)
 	}
-	//printGrid(input.Map, visited.data, guard)
 
 	for {
 		if !isInBounds(guard.pos, input.Map) {
@@ -125,11 +100,9 @@ func SolvePart1(input SolutionInput) int {
 			continue
 		}
 		guard.Move(nextPosition)
-		//printGrid(input.Map, visited.data, guard)
 	}
-	//printGrid(input.Map, visited.data, guard)
 
-	return visited.Size()
+	return visited.Length()
 }
 
 func isInBounds(pos common.Point, m [][]rune) bool {

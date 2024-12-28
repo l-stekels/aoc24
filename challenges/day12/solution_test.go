@@ -6,7 +6,7 @@ import (
 
 func TestParser_CreateSolutionInput(t *testing.T) {
 	parser := &Parser{}
-	input := ""
+	input := "RRRRIICCFF\nRRRRIICCCF\nVVRRRCCFFF\nVVRCCCJFFF\nVVVVCJJCFE\nVVIVCCJJEE\nVVIIICJJEE\nMIIIIIJJEE\nMIIISIJEEE\nMMMISSJEEE"
 	_ = createSolutionInput()
 
 	result, err := parser.CreateSolutionInput(input)

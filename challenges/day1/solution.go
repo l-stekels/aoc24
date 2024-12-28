@@ -11,7 +11,6 @@ import (
 type Parser struct{}
 
 func (p Parser) CreateSolutionInput(content string) (SolutionInput, error) {
-	// Normalize spaces
 	lines := strings.Split(content, "\n")
 	for i, line := range lines {
 		lines[i] = strings.Join(strings.Fields(line), " ")

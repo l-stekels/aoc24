@@ -83,7 +83,7 @@ func SolvePart1(input SolutionInput) int {
 		}
 	}
 
-	return uniqueAntiNodePositions.Size()
+	return uniqueAntiNodePositions.Length()
 }
 
 func findAntiNodesForPair(a1 Antenna, a2 Antenna, width int, length int, positions *common.Set[common.Point]) {
@@ -128,7 +128,7 @@ func SolvePart2(input SolutionInput) int {
 		}
 	}
 
-	return uniqueAntiNodePositions.Size()
+	return uniqueAntiNodePositions.Length()
 }
 
 func findLinePoints(a1 Antenna, a2 Antenna, width int, length int) common.Set[common.Point] {

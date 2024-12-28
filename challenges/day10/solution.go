@@ -190,7 +190,7 @@ func SolvePart1(input SolutionInput) int {
 			reachableNines.Add(position)
 		}
 		calculateTrailhead(input.grid, trailhead, scoreCallback)
-		result += reachableNines.Size()
+		result += reachableNines.Length()
 	}
 
 	return result
