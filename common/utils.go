@@ -10,14 +10,13 @@ import (
 func ReadInput[T SolutionInput](
 	baseDir string,
 	day ChallengeDay,
-	input ChallengeInput,
 	parser SolutionParser[T],
 ) (T, error) {
 	filePath := filepath.Join(
 		baseDir,
 		"challenges",
 		day.String(),
-		input.String()+".txt",
+		"input.txt",
 	)
 
 	file, err := os.Open(filePath)
@@ -48,40 +47,6 @@ func AbsDiff(x, y int) int {
 		return x - y
 	}
 	return y - x
-}
-
-type Set[T comparable] struct {
-	data map[T]bool
-}
-
-func NewSet[T comparable]() Set[T] {
-	return Set[T]{data: map[T]bool{}}
-}
-
-func (s *Set[T]) Add(element T) {
-	if !s.Contains(element) {
-		s.data[element] = true
-	}
-}
-
-func (s *Set[T]) Contains(element T) bool {
-	_, ok := s.data[element]
-
-	return ok
-}
-
-func (s *Set[T]) Size() int {
-	return len(s.data)
-}
-
-func (s *Set[T]) Merge(other Set[T]) {
-	for element := range other.data {
-		s.Add(element)
-	}
-}
-
-type Point struct {
-	X, Y int
 }
 
 // Abs returns the absolute value of x.

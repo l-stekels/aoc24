@@ -18,11 +18,10 @@ func TestParser_CreateSolutionInput(t *testing.T) {
 	if err := result.Validate(); err != nil {
 		t.Fatalf("Validate failed: %v", err)
 	}
-	for x, row := range result.grid {
-		for y, symbol := range row {
-			if symbol != expected.grid[x][y] {
-				t.Errorf("CreateSolutionInput grid not the same at x: %v, y: %v, got %v, want %v", x, y, symbol, expected.grid[x][y])
-			}
+	for result.grid.HasNext() {
+		value, position := result.grid.Next()
+		if value != expected.grid.Get(position) {
+			t.Errorf("CreateSolutionInput grid incorrect at %v, want %v got %v", position, expected.grid.Get(position), value)
 		}
 	}
 	for freq, antennas := range result.antennas {
@@ -83,7 +82,7 @@ func Test_SolvePart2(t *testing.T) {
 
 func createTestInput() SolutionInput {
 	return SolutionInput{
-		grid: [][]rune{
+		grid: common.NewGrid[rune]([][]rune{
 			{'.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
 			{'.', '.', '.', '.', '.', '.', '.', '.', '0', '.', '.', '.'},
 			{'.', '.', '.', '.', '.', '0', '.', '.', '.', '.', '.', '.'},
@@ -96,7 +95,7 @@ func createTestInput() SolutionInput {
 			{'.', '.', '.', '.', '.', '.', '.', '.', '.', 'A', '.', '.'},
 			{'.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
 			{'.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
-		},
+		}),
 		antennas: map[Frequency][]Antenna{
 			'0': {
 				{pos: common.Point{X: 1, Y: 8}, freq: "0"},

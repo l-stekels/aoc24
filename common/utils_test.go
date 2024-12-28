@@ -25,7 +25,7 @@ func (m MockSolutionInput) Validate() error {
 func TestReadInput(t *testing.T) {
 	mockParser := &MockSolutionParser{ExpectedContent: "3   4\n4   3\n2   5\n1   3\n3   9\n3   3"}
 
-	_, err := ReadInput("testdata", Day1, Input, mockParser)
+	_, err := ReadInput("testdata", Day1, mockParser)
 	if err != nil {
 		t.Fatalf("ReadInput failed: %v", err)
 	}

@@ -1,26 +1,14 @@
 package day6
 
 import (
+	"advent2024/common"
 	"testing"
 )
 
 func TestParser_CreateSolutionInput(t *testing.T) {
 	parser := &Parser{}
 	input := "....#.....\n.........#\n..........\n..#.......\n.......#..\n..........\n.#..^.....\n........#.\n#.........\n......#..."
-	expected := SolutionInput{
-		Map: [][]rune{
-			{'.', '.', '.', '.', '#', '.', '.', '.', '.', '.'},
-			{'.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
-			{'.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
-			{'.', '.', '#', '.', '.', '.', '.', '.', '.', '.'},
-			{'.', '.', '.', '.', '.', '.', '.', '#', '.', '.'},
-			{'.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
-			{'.', '#', '.', '.', '^', '.', '.', '.', '.', '.'},
-			{'.', '.', '.', '.', '.', '.', '.', '.', '#', '.'},
-			{'#', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
-			{'.', '.', '.', '.', '.', '.', '#', '.', '.', '.'},
-		},
-	}
+	expected := createTestInput()
 
 	result, err := parser.CreateSolutionInput(input)
 	if err != nil {
@@ -30,11 +18,10 @@ func TestParser_CreateSolutionInput(t *testing.T) {
 	if err := result.Validate(); err != nil {
 		t.Fatalf("Validate failed: %v", err)
 	}
-	for y, row := range expected.Map {
-		for x, cell := range row {
-			if result.Map[y][x] != cell {
-				t.Errorf("CreateSolution input: map cell incorrect at %v, want %v got %v", NewPoint(x, y), cell, result.Map[y][x])
-			}
+	for result.Grid.HasNext() {
+		value, position := result.Grid.Next()
+		if value != expected.Grid.Get(position) {
+			t.Errorf("CreateSolution input: map cell incorrect at %v, want %v got %v", position, expected.Grid.Get(position), value)
 		}
 	}
 }
@@ -46,21 +33,8 @@ func Test_SolvePart1(t *testing.T) {
 		expected int
 	}{
 		{
-			name: "Example",
-			input: SolutionInput{
-				Map: [][]rune{
-					{'.', '.', '.', '.', '#', '.', '.', '.', '.', '.'},
-					{'.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
-					{'.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
-					{'.', '.', '#', '.', '.', '.', '.', '.', '.', '.'},
-					{'.', '.', '.', '.', '.', '.', '.', '#', '.', '.'},
-					{'.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
-					{'.', '#', '.', '.', '^', '.', '.', '.', '.', '.'},
-					{'.', '.', '.', '.', '.', '.', '.', '.', '#', '.'},
-					{'#', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
-					{'.', '.', '.', '.', '.', '.', '#', '.', '.', '.'},
-				},
-			},
+			name:     "Example",
+			input:    createTestInput(),
 			expected: 41,
 		},
 	}
@@ -82,21 +56,8 @@ func Test_SolvePart2(t *testing.T) {
 		expected int
 	}{
 		{
-			name: "Example",
-			input: SolutionInput{
-				Map: [][]rune{
-					{'.', '.', '.', '.', '#', '.', '.', '.', '.', '.'},
-					{'.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
-					{'.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
-					{'.', '.', '#', '.', '.', '.', '.', '.', '.', '.'},
-					{'.', '.', '.', '.', '.', '.', '.', '#', '.', '.'},
-					{'.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
-					{'.', '#', '.', '.', '^', '.', '.', '.', '.', '.'},
-					{'.', '.', '.', '.', '.', '.', '.', '.', '#', '.'},
-					{'#', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
-					{'.', '.', '.', '.', '.', '.', '#', '.', '.', '.'},
-				},
-			},
+			name:     "Example",
+			input:    createTestInput(),
 			expected: 6,
 		},
 	}
@@ -108,5 +69,22 @@ func Test_SolvePart2(t *testing.T) {
 				t.Errorf("SolvePart1 failed: got %d, want %d", result, tt.expected)
 			}
 		})
+	}
+}
+
+func createTestInput() SolutionInput {
+	return SolutionInput{
+		Grid: common.NewGrid[rune]([][]rune{
+			{'.', '.', '.', '.', '#', '.', '.', '.', '.', '.'},
+			{'.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
+			{'.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
+			{'.', '.', '#', '.', '.', '.', '.', '.', '.', '.'},
+			{'.', '.', '.', '.', '.', '.', '.', '#', '.', '.'},
+			{'.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
+			{'.', '#', '.', '.', '^', '.', '.', '.', '.', '.'},
+			{'.', '.', '.', '.', '.', '.', '.', '.', '#', '.'},
+			{'#', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
+			{'.', '.', '.', '.', '.', '.', '#', '.', '.', '.'},
+		}),
 	}
 }

@@ -11,9 +11,7 @@ type Parser struct{}
 
 func (p Parser) CreateSolutionInput(content string) (SolutionInput, error) {
 	result := SolutionInput{
-		grid: Grid{
-			data: [][]int{},
-		},
+		grid: common.NewGrid[int]([][]int{}),
 	}
 	stringRows := strings.Split(content, "\n")
 	for _, stringRow := range stringRows {
@@ -26,53 +24,22 @@ func (p Parser) CreateSolutionInput(content string) (SolutionInput, error) {
 			}
 			row = append(row, height)
 		}
-		result.grid.data = append(result.grid.data, row)
+		result.grid.AddRow(row)
 	}
-	result.grid.rows = len(result.grid.data)
-	result.grid.cols = len(result.grid.data[0])
 
 	return result, nil
 }
 
 type SolutionInput struct {
-	grid Grid
+	grid common.Grid[int]
 }
 
 func (s SolutionInput) Validate() error {
-	if s.grid.rows != s.grid.cols {
-		return fmt.Errorf("grid is not square")
-	}
-
 	return nil
 }
 
-type Grid struct {
-	data [][]int
-	rows int
-	cols int
-}
-
-func (g Grid) Get(pos Position) int {
-	return g.data[pos.X][pos.Y]
-}
-
-func (g Grid) IsPositionValid(position Position) bool {
-	return position.X >= 0 && position.X < g.rows && position.Y >= 0 && position.Y < g.cols
-}
-
-// Position represents a point in the grid
-type Position common.Point
-
-var (
-	Directions = []Position{Up, Right, Down, Left}
-	Up         = Position{X: -1}
-	Right      = Position{Y: 1}
-	Down       = Position{X: 1}
-	Left       = Position{Y: -1}
-)
-
 type QueueEntry struct {
-	pos  Position
+	pos  common.Point
 	path Path
 }
 
@@ -106,14 +73,14 @@ func (q *Queue) IsEmpty() bool {
 }
 
 type Path struct {
-	set common.Set[Position]
+	set common.Set[common.Point]
 }
 
 func NewPath() Path {
-	return Path{set: common.NewSet[Position]()}
+	return Path{set: common.NewPointSet()}
 }
 
-func (p *Path) Add(position Position) {
+func (p *Path) Add(position common.Point) {
 	p.set.Add(position)
 }
 
@@ -124,11 +91,11 @@ func (p *Path) Copy() Path {
 	return newPath
 }
 
-func (p *Path) Contains(position Position) bool {
+func (p *Path) Contains(position common.Point) bool {
 	return p.set.Contains(position)
 }
 
-func calculateTrailhead(grid Grid, startPosition Position, callback func(position Position)) {
+func calculateTrailhead(grid common.Grid[int], startPosition common.Point, callback func(position common.Point)) {
 	queue := newQueue()
 	visited := common.NewSet[string]()
 
@@ -143,8 +110,8 @@ func calculateTrailhead(grid Grid, startPosition Position, callback func(positio
 			callback(current.pos)
 			continue
 		}
-		for _, direction := range Directions {
-			nextPosition := Position{X: current.pos.X + direction.X, Y: current.pos.Y + direction.Y}
+		for _, direction := range common.Directions {
+			nextPosition := common.Point{X: current.pos.X + direction.X(), Y: current.pos.Y + direction.Y()}
 			if !grid.IsPositionValid(nextPosition) {
 				continue
 			}
@@ -167,13 +134,12 @@ func calculateTrailhead(grid Grid, startPosition Position, callback func(positio
 	}
 }
 
-func findTrailheads(grid Grid) []Position {
-	trailheads := make([]Position, 0)
-	for x, row := range grid.data {
-		for y, cell := range row {
-			if cell == 0 {
-				trailheads = append(trailheads, Position{X: x, Y: y})
-			}
+func findTrailheads(grid common.Grid[int]) []common.Point {
+	trailheads := make([]common.Point, 0)
+	for grid.HasNext() {
+		cell, pos := grid.Next()
+		if cell == 0 {
+			trailheads = append(trailheads, pos)
 		}
 	}
 
@@ -185,12 +151,12 @@ func SolvePart1(input SolutionInput) int {
 	trailheads := findTrailheads(input.grid)
 
 	for _, trailhead := range trailheads {
-		reachableNines := common.NewSet[Position]()
-		scoreCallback := func(position Position) {
+		reachableNines := common.NewPointSet()
+		scoreCallback := func(position common.Point) {
 			reachableNines.Add(position)
 		}
 		calculateTrailhead(input.grid, trailhead, scoreCallback)
-		result += reachableNines.Length()
+		result += reachableNines.Size()
 	}
 
 	return result
@@ -202,7 +168,7 @@ func SolvePart2(input SolutionInput) int {
 
 	for _, trailhead := range trailheads {
 		uniquePaths := 0
-		countUniquePaths := func(position Position) {
+		countUniquePaths := func(position common.Point) {
 			uniquePaths++
 		}
 		calculateTrailhead(input.grid, trailhead, countUniquePaths)

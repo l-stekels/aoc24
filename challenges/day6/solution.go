@@ -10,35 +10,25 @@ type Parser struct{}
 
 func (p Parser) CreateSolutionInput(content string) (SolutionInput, error) {
 	result := SolutionInput{
-		Map: [][]rune{},
+		Grid: common.NewGrid[rune](make([][]rune, 0)),
 	}
 	stringRows := strings.Split(content, "\n")
-	for x, row := range stringRows {
-		result.Map = append(result.Map, []rune{})
-		for _, cell := range row {
-			result.Map[x] = append(result.Map[x], cell)
-		}
+	for _, row := range stringRows {
+		result.Grid.AddRow([]rune(row))
 	}
 
 	return result, nil
 }
 
 type SolutionInput struct {
-	Map [][]rune
+	Grid common.Grid[rune]
 }
-
-type Direction struct {
-	dx, dy int
-}
-
-var (
-	Up    = Direction{-1, 0}
-	Right = Direction{0, 1}
-	Down  = Direction{1, 0}
-	Left  = Direction{0, -1}
-)
 
 type FacingDirection rune
+
+func parseRune(r rune) FacingDirection {
+	return FacingDirection(r)
+}
 
 const (
 	UpFacing    FacingDirection = '^'
@@ -49,23 +39,23 @@ const (
 
 type Guard struct {
 	pos    common.Point
-	dir    Direction
+	dir    common.Direction
 	facing FacingDirection
 }
 
 func (g *Guard) TurnRight() {
 	switch g.dir {
-	case Up:
-		g.dir = Right
+	case common.Up:
+		g.dir = common.Right
 		g.facing = RightFacing
-	case Right:
-		g.dir = Down
+	case common.Right:
+		g.dir = common.Down
 		g.facing = DownFacing
-	case Down:
-		g.dir = Left
+	case common.Down:
+		g.dir = common.Left
 		g.facing = LeftFacing
-	case Left:
-		g.dir = Up
+	case common.Left:
+		g.dir = common.Up
 		g.facing = UpFacing
 	}
 }
@@ -74,58 +64,58 @@ func (g *Guard) Move(pos common.Point) {
 	g.pos = pos
 }
 
+func (g *Guard) copy() Guard {
+	return Guard{
+		pos:    g.pos,
+		dir:    g.dir,
+		facing: g.facing,
+	}
+}
+
 func (s SolutionInput) Validate() error {
 	return nil
 }
 
 func SolvePart1(input SolutionInput) int {
 	visited := common.NewSet[common.Point]()
-	guard, err := findGuard(input.Map)
+	guard, err := findGuard(input.Grid)
 	if err != nil {
 		panic(err)
 	}
 
 	for {
-		if !isInBounds(guard.pos, input.Map) {
+		if !input.Grid.IsPositionValid(guard.pos) {
 			break
 		}
 		visited.Add(guard.pos)
 
-		nextPosition := common.Point{X: guard.pos.X + guard.dir.dx, Y: guard.pos.Y + guard.dir.dy}
-		if !isInBounds(nextPosition, input.Map) {
+		nextPosition := common.Point{X: guard.pos.X + guard.dir.X(), Y: guard.pos.Y + guard.dir.Y()}
+		if !input.Grid.IsPositionValid(nextPosition) {
 			break
 		}
-		if input.Map[nextPosition.X][nextPosition.Y] == '#' {
+		if input.Grid.Get(nextPosition) == '#' {
 			guard.TurnRight()
 			continue
 		}
 		guard.Move(nextPosition)
 	}
 
-	return visited.Length()
+	return visited.Size()
 }
 
-func isInBounds(pos common.Point, m [][]rune) bool {
-	if pos.X < 0 || pos.Y < 0 {
-		return false
-	}
-	return pos.X < len(m[0]) && pos.Y < len(m)
-}
-
-func findGuard(m [][]rune) (Guard, error) {
-	for x, row := range m {
-		for y, cell := range row {
-			point := common.Point{X: x, Y: y}
-			switch cell {
-			case '^':
-				return Guard{pos: point, dir: Up, facing: UpFacing}, nil
-			case '>':
-				return Guard{point, Right, RightFacing}, nil
-			case 'v':
-				return Guard{point, Down, DownFacing}, nil
-			case '<':
-				return Guard{point, Left, LeftFacing}, nil
-			}
+func findGuard(grid common.Grid[rune]) (Guard, error) {
+	for grid.HasNext() {
+		cell, pos := grid.Next()
+		guardFacing := parseRune(cell)
+		switch guardFacing {
+		case UpFacing:
+			return Guard{pos, common.Up, UpFacing}, nil
+		case RightFacing:
+			return Guard{pos, common.Right, RightFacing}, nil
+		case DownFacing:
+			return Guard{pos, common.Down, DownFacing}, nil
+		case LeftFacing:
+			return Guard{pos, common.Left, LeftFacing}, nil
 		}
 	}
 
@@ -134,14 +124,14 @@ func findGuard(m [][]rune) (Guard, error) {
 
 type State struct {
 	pos common.Point
-	dir Direction
+	dir common.Direction
 }
 
-func detectLoop(grid [][]rune, guard Guard) bool {
+func detectLoop(grid common.Grid[rune], guard Guard) bool {
 	visited := common.NewSet[State]()
 
 	for {
-		if !isInBounds(guard.pos, grid) {
+		if !grid.IsPositionValid(guard.pos) {
 			break
 		}
 		currentState := State{pos: guard.pos, dir: guard.dir}
@@ -150,11 +140,11 @@ func detectLoop(grid [][]rune, guard Guard) bool {
 			return true
 		}
 		visited.Add(currentState)
-		nextPosition := common.Point{X: guard.pos.X + guard.dir.dx, Y: guard.pos.Y + guard.dir.dy}
-		if !isInBounds(nextPosition, grid) {
+		nextPosition := common.Point{X: guard.pos.X + guard.dir.X(), Y: guard.pos.Y + guard.dir.Y()}
+		if !grid.IsPositionValid(nextPosition) {
 			break
 		}
-		if grid[nextPosition.X][nextPosition.Y] == '#' {
+		if grid.Get(nextPosition) == '#' {
 			guard.TurnRight()
 			continue
 		}
@@ -166,31 +156,21 @@ func detectLoop(grid [][]rune, guard Guard) bool {
 
 func SolvePart2(input SolutionInput) int {
 	result := 0
-	startGuard, err := findGuard(input.Map)
+	startGuard, err := findGuard(input.Grid)
 	if err != nil {
 		panic(err)
 	}
 
-	for x, row := range input.Map {
-		for y, cell := range row {
-			if cell == '#' || cell == '^' || cell == '>' || cell == 'v' || cell == '<' {
-				continue
-			}
-			testMap := copyMap(input.Map)
-			testMap[x][y] = '#'
-			if detectLoop(testMap, Guard{pos: startGuard.pos, dir: startGuard.dir, facing: startGuard.facing}) {
-				result++
-			}
+	for input.Grid.HasNext() {
+		cell, pos := input.Grid.Next()
+		if cell == '#' || cell == '^' || cell == '>' || cell == 'v' || cell == '<' {
+			continue
 		}
-	}
-
-	return result
-}
-
-func copyMap(m [][]rune) [][]rune {
-	var result [][]rune
-	for _, row := range m {
-		result = append(result, append([]rune{}, row...))
+		testMap := input.Grid.Copy()
+		testMap.Set('#', pos)
+		if detectLoop(testMap, startGuard.copy()) {
+			result++
+		}
 	}
 
 	return result

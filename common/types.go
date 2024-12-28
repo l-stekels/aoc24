@@ -2,8 +2,6 @@ package common
 
 type ChallengeDay string
 
-type ChallengeInput string
-
 const (
 	Day1  ChallengeDay = "day1"
 	Day2  ChallengeDay = "day2"
@@ -22,16 +20,8 @@ const (
 	Day15 ChallengeDay = "day15"
 )
 
-const (
-	Input ChallengeInput = "input"
-)
-
 func (d ChallengeDay) String() string {
 	return string(d)
-}
-
-func (i ChallengeInput) String() string {
-	return string(i)
 }
 
 type SolutionInput interface {

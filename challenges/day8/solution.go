@@ -12,16 +12,15 @@ type Parser struct{}
 func (p Parser) CreateSolutionInput(content string) (SolutionInput, error) {
 	lines := strings.Split(content, "\n")
 	result := SolutionInput{
-		grid:     make([][]rune, len(lines)),
+		grid:     common.NewGrid([][]rune{}),
 		antennas: map[Frequency][]Antenna{},
 	}
 
 	for x, line := range lines {
+		result.grid.AddRow([]rune(line))
 		symbols := strings.Split(line, "")
-		result.grid[x] = make([]rune, 0, len(symbols))
 		for y, symbol := range symbols {
 			gridElement := rune(symbol[0])
-			result.grid[x] = append(result.grid[x], gridElement)
 			if gridElement == '.' {
 				continue
 			}
@@ -40,7 +39,7 @@ func (p Parser) CreateSolutionInput(content string) (SolutionInput, error) {
 }
 
 type SolutionInput struct {
-	grid     [][]rune
+	grid     common.Grid[rune]
 	antennas map[Frequency][]Antenna
 }
 
@@ -56,7 +55,7 @@ func (f Frequency) String() string {
 }
 
 func (s SolutionInput) Validate() error {
-	if len(s.grid) == 0 {
+	if s.grid.Rows() == 0 {
 		return fmt.Errorf("grid is empty")
 	}
 	if len(s.antennas) == 0 {
@@ -67,8 +66,8 @@ func (s SolutionInput) Validate() error {
 }
 
 func SolvePart1(input SolutionInput) int {
-	width := len(input.grid)
-	length := len(input.grid[0])
+	width := input.grid.Rows()
+	length := input.grid.Cols()
 	uniqueAntiNodePositions := common.NewSet[common.Point]()
 
 	for _, antennas := range input.antennas {
@@ -83,7 +82,7 @@ func SolvePart1(input SolutionInput) int {
 		}
 	}
 
-	return uniqueAntiNodePositions.Length()
+	return uniqueAntiNodePositions.Size()
 }
 
 func findAntiNodesForPair(a1 Antenna, a2 Antenna, width int, length int, positions *common.Set[common.Point]) {
@@ -112,8 +111,8 @@ func inBounds(p1 common.Point, width, length int) bool {
 }
 
 func SolvePart2(input SolutionInput) int {
-	width := len(input.grid)
-	length := len(input.grid[0])
+	width := input.grid.Rows()
+	length := input.grid.Cols()
 	uniqueAntiNodePositions := common.NewSet[common.Point]()
 
 	for _, antennas := range input.antennas {
@@ -128,7 +127,7 @@ func SolvePart2(input SolutionInput) int {
 		}
 	}
 
-	return uniqueAntiNodePositions.Length()
+	return uniqueAntiNodePositions.Size()
 }
 
 func findLinePoints(a1 Antenna, a2 Antenna, width int, length int) common.Set[common.Point] {

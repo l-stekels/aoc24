@@ -58,7 +58,7 @@ func Test_SolvePart2(t *testing.T) {
 		{
 			name:     "Example",
 			input:    createSolutionInput(),
-			expected: 0,
+			expected: 65601038650482,
 		},
 	}
 
