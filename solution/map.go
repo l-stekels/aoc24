@@ -6,6 +6,8 @@ import (
 	"advent2024/challenges/day11"
 	"advent2024/challenges/day12"
 	"advent2024/challenges/day13"
+	"advent2024/challenges/day14"
+	"advent2024/challenges/day15"
 	"advent2024/challenges/day2"
 	"advent2024/challenges/day3"
 	"advent2024/challenges/day4"
@@ -40,6 +42,8 @@ func NewSolutionMap(baseDir string) Map {
 			11: createSolutionFunc[day11.SolutionInput, int](baseDir, common.Day11, common.Input, &day11.Parser{}, day11.SolvePart1, day11.SolvePart2),
 			12: createSolutionFunc[day12.SolutionInput, int](baseDir, common.Day12, common.Input, &day12.Parser{}, day12.SolvePart1, day12.SolvePart2),
 			13: createSolutionFunc[day13.SolutionInput, int](baseDir, common.Day13, common.Input, &day13.Parser{}, day13.SolvePart1, day13.SolvePart2),
+			14: createSolutionFunc[day14.SolutionInput, int](baseDir, common.Day14, common.Input, &day14.Parser{}, day14.SolvePart1, day14.SolvePart2),
+			15: createSolutionFunc[day15.SolutionInput, int](baseDir, common.Day15, common.Input, &day15.Parser{}, day15.SolvePart1, day15.SolvePart2),
 		},
 	}
 }
