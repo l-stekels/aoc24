@@ -11,7 +11,7 @@ type Parser struct{}
 
 func (p Parser) CreateSolutionInput(content string) (SolutionInput, error) {
 	result := SolutionInput{
-		grid: common.NewGrid[int]([][]int{}),
+		grid: common.NewGridFromElements[int]([][]int{}),
 	}
 	stringRows := strings.Split(content, "\n")
 	for _, stringRow := range stringRows {
@@ -43,35 +43,6 @@ type QueueEntry struct {
 	path Path
 }
 
-func newQueue() Queue {
-	return Queue{items: []QueueEntry{}}
-}
-
-type Queue struct {
-	items []QueueEntry
-	size  int
-}
-
-func (q *Queue) Enqueue(entry QueueEntry) {
-	q.items = append([]QueueEntry{entry}, q.items...)
-	q.size++
-}
-
-func (q *Queue) Dequeue() QueueEntry {
-	if q.size == 0 {
-		panic("queue is empty")
-	}
-	entry := q.items[0]
-	q.items = q.items[1:]
-	q.size--
-
-	return entry
-}
-
-func (q *Queue) IsEmpty() bool {
-	return q.size == 0
-}
-
 type Path struct {
 	set common.Set[common.Point]
 }
@@ -96,7 +67,7 @@ func (p *Path) Contains(position common.Point) bool {
 }
 
 func calculateTrailhead(grid common.Grid[int], startPosition common.Point, callback func(position common.Point)) {
-	queue := newQueue()
+	queue := common.NewQueue[QueueEntry]()
 	visited := common.NewSet[string]()
 
 	initialPath := NewPath()

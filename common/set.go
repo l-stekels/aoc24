@@ -1,11 +1,17 @@
 package common
 
+import "iter"
+
+type void struct{}
+
+var empty void
+
 type Set[T comparable] struct {
-	data map[T]bool
+	data map[T]void
 }
 
 func NewSet[T comparable]() Set[T] {
-	return Set[T]{data: map[T]bool{}}
+	return Set[T]{data: map[T]void{}}
 }
 
 func NewPointSet() Set[Point] {
@@ -13,15 +19,13 @@ func NewPointSet() Set[Point] {
 }
 
 func (s *Set[T]) Add(element T) {
-	if !s.Contains(element) {
-		s.data[element] = true
-	}
+	s.data[element] = empty
 }
 
 func (s *Set[T]) Contains(element T) bool {
-	_, ok := s.data[element]
+	_, exists := s.data[element]
 
-	return ok
+	return exists
 }
 
 func (s *Set[T]) Size() int {
@@ -30,6 +34,16 @@ func (s *Set[T]) Size() int {
 
 func (s *Set[T]) Merge(other Set[T]) {
 	for element := range other.data {
-		s.Add(element)
+		s.data[element] = empty
+	}
+}
+
+func (s *Set[T]) All() iter.Seq[T] {
+	return func(yield func(T) bool) {
+		for element := range s.data {
+			if !yield(element) {
+				return
+			}
+		}
 	}
 }

@@ -90,7 +90,7 @@ func Test_SolvePart2(t *testing.T) {
 func createSolutionInput(args ...int) SolutionInput {
 	if len(args) == 0 {
 		return SolutionInput{
-			grid: common.NewGrid[int]([][]int{
+			grid: common.NewGridFromElements[int]([][]int{
 				{8, 9, 0, 1, 0, 1, 2, 3},
 				{7, 8, 1, 2, 1, 8, 7, 4},
 				{8, 7, 4, 3, 0, 9, 6, 5},
@@ -109,7 +109,7 @@ func createSolutionInput(args ...int) SolutionInput {
 	switch number {
 	case 2:
 		return SolutionInput{
-			grid: common.NewGrid[int]([][]int{
+			grid: common.NewGridFromElements[int]([][]int{
 				{-1, -1, -1, -1, -1, 0, -1},
 				{-1, -1, 4, 3, 2, 1, -1},
 				{-1, -1, 5, -1, -1, 2, -1},
@@ -121,7 +121,7 @@ func createSolutionInput(args ...int) SolutionInput {
 		}
 	case 3:
 		return SolutionInput{
-			grid: common.NewGrid[int]([][]int{
+			grid: common.NewGridFromElements[int]([][]int{
 				{-1, -1, 9, 0, -1, -1, 9},
 				{-1, -1, -1, 1, -1, 9, 8},
 				{-1, -1, -1, 2, -1, -1, 7},
@@ -133,7 +133,7 @@ func createSolutionInput(args ...int) SolutionInput {
 		}
 	case 4:
 		return SolutionInput{
-			grid: common.NewGrid[int]([][]int{
+			grid: common.NewGridFromElements[int]([][]int{
 				{0, 1, 2, 3, 4, 5},
 				{1, 2, 3, 4, 5, 6},
 				{2, 3, 4, 5, 6, 7},

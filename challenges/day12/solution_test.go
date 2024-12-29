@@ -8,7 +8,7 @@ import (
 func TestParser_CreateSolutionInput(t *testing.T) {
 	parser := &Parser{}
 	input := "RRRRIICCFF\nRRRRIICCCF\nVVRRRCCFFF\nVVRCCCJFFF\nVVVVCJJCFE\nVVIVCCJJEE\nVVIIICJJEE\nMIIIIIJJEE\nMIIISIJEEE\nMMMISSJEEE"
-	expected := createSolutionInput()
+	expected := createSolutionInput(0)
 
 	result, err := parser.CreateSolutionInput(input)
 	if err != nil {
@@ -33,8 +33,13 @@ func Test_SolvePart1(t *testing.T) {
 	}{
 		{
 			name:     "Example",
-			input:    createSolutionInput(),
-			expected: 0,
+			input:    createSolutionInput(0),
+			expected: 1930,
+		},
+		{
+			name:     "Example",
+			input:    createSolutionInput(1),
+			expected: 772,
 		},
 	}
 
@@ -56,8 +61,8 @@ func Test_SolvePart2(t *testing.T) {
 	}{
 		{
 			name:     "Example",
-			input:    createSolutionInput(),
-			expected: 0,
+			input:    createSolutionInput(0),
+			expected: 1930,
 		},
 	}
 
@@ -71,19 +76,32 @@ func Test_SolvePart2(t *testing.T) {
 	}
 }
 
-func createSolutionInput() SolutionInput {
-	return SolutionInput{
-		grid: common.NewGrid[rune]([][]rune{
-			{'R', 'R', 'R', 'R', 'I', 'I', 'C', 'C', 'F', 'F'},
-			{'R', 'R', 'R', 'R', 'I', 'I', 'C', 'C', 'C', 'F'},
-			{'V', 'V', 'R', 'R', 'R', 'C', 'C', 'F', 'F', 'F'},
-			{'V', 'V', 'R', 'C', 'C', 'C', 'J', 'F', 'F', 'F'},
-			{'V', 'V', 'V', 'V', 'C', 'J', 'J', 'C', 'F', 'E'},
-			{'V', 'V', 'I', 'V', 'C', 'C', 'J', 'J', 'E', 'E'},
-			{'V', 'V', 'I', 'I', 'I', 'C', 'J', 'J', 'E', 'E'},
-			{'M', 'I', 'I', 'I', 'I', 'I', 'J', 'J', 'E', 'E'},
-			{'M', 'I', 'I', 'I', 'S', 'I', 'J', 'E', 'E', 'E'},
-			{'M', 'M', 'M', 'I', 'S', 'S', 'J', 'E', 'E', 'E'},
-		}),
+func createSolutionInput(num int) SolutionInput {
+	switch num {
+	case 1:
+		return SolutionInput{
+			grid: common.NewGridFromElements[rune]([][]rune{
+				{'O', 'O', 'O', 'O', 'O'},
+				{'O', 'X', 'O', 'X', 'O'},
+				{'O', 'O', 'O', 'O', 'O'},
+				{'O', 'X', 'O', 'X', 'O'},
+				{'O', 'O', 'O', 'O', 'O'},
+			}),
+		}
+	default:
+		return SolutionInput{
+			grid: common.NewGridFromElements[rune]([][]rune{
+				{'R', 'R', 'R', 'R', 'I', 'I', 'C', 'C', 'F', 'F'},
+				{'R', 'R', 'R', 'R', 'I', 'I', 'C', 'C', 'C', 'F'},
+				{'V', 'V', 'R', 'R', 'R', 'C', 'C', 'F', 'F', 'F'},
+				{'V', 'V', 'R', 'C', 'C', 'C', 'J', 'F', 'F', 'F'},
+				{'V', 'V', 'V', 'V', 'C', 'J', 'J', 'C', 'F', 'E'},
+				{'V', 'V', 'I', 'V', 'C', 'C', 'J', 'J', 'E', 'E'},
+				{'V', 'V', 'I', 'I', 'I', 'C', 'J', 'J', 'E', 'E'},
+				{'M', 'I', 'I', 'I', 'I', 'I', 'J', 'J', 'E', 'E'},
+				{'M', 'I', 'I', 'I', 'S', 'I', 'J', 'E', 'E', 'E'},
+				{'M', 'M', 'M', 'I', 'S', 'S', 'J', 'E', 'E', 'E'},
+			}),
+		}
 	}
 }

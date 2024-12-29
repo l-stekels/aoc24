@@ -10,7 +10,7 @@ type Parser struct{}
 
 func (p Parser) CreateSolutionInput(content string) (SolutionInput, error) {
 	result := SolutionInput{
-		Grid: common.NewGrid[rune](make([][]rune, 0)),
+		Grid: common.NewGridFromElements[rune](make([][]rune, 0)),
 	}
 	stringRows := strings.Split(content, "\n")
 	for _, row := range stringRows {

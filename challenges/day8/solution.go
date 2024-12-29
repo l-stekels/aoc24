@@ -12,7 +12,7 @@ type Parser struct{}
 func (p Parser) CreateSolutionInput(content string) (SolutionInput, error) {
 	lines := strings.Split(content, "\n")
 	result := SolutionInput{
-		grid:     common.NewGrid([][]rune{}),
+		grid:     common.NewGridFromElements([][]rune{}),
 		antennas: map[Frequency][]Antenna{},
 	}
 

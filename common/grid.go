@@ -1,6 +1,6 @@
 package common
 
-type Grid[T int | rune] struct {
+type Grid[T int | rune | bool] struct {
 	data       [][]T
 	rows       int
 	cols       int
@@ -8,7 +8,7 @@ type Grid[T int | rune] struct {
 	currentCol int
 }
 
-func NewGrid[T int | rune](elements [][]T) Grid[T] {
+func NewGridFromElements[T int | rune | bool](elements [][]T) Grid[T] {
 	if len(elements) == 0 {
 		data := make([][]T, 0)
 		for i := range data {
@@ -18,6 +18,15 @@ func NewGrid[T int | rune](elements [][]T) Grid[T] {
 	}
 
 	return Grid[T]{data: elements, rows: len(elements), cols: len(elements[0])}
+}
+
+func NewEmptyGrid[T int | rune | bool](rows, cols int) Grid[T] {
+	data := make([][]T, rows)
+	for i := range data {
+		data[i] = make([]T, cols)
+	}
+
+	return Grid[T]{data: data, rows: rows, cols: cols}
 }
 
 func (g *Grid[T]) Rows() int {
@@ -30,21 +39,14 @@ func (g *Grid[T]) Cols() int {
 
 // AddRow adds a new row of elements T to the grid
 func (g *Grid[T]) AddRow(row []T) {
-	// if grid is empty, set dimensions
 	if g.rows == 0 && g.cols == 0 {
-		// grid will always be square
 		g.cols = len(row)
 		g.rows = len(row)
 	}
-	// before adding new rows check if they match dimensions
 	if len(row) != g.cols {
 		panic("row has different length")
 	}
-	rowData := make([]T, g.cols)
-	for i := range rowData {
-		rowData[i] = row[i]
-	}
-	g.data = append(g.data, rowData)
+	g.data = append(g.data, row)
 }
 
 // Get returns the value at the given position
@@ -72,14 +74,13 @@ func (g *Grid[T]) HasNext() bool {
 
 // Next returns the next element T in the grid and its position (x, y)
 func (g *Grid[T]) Next() (T, Point) {
-	value := g.data[g.currentRow][g.currentCol]
 	pos := Point{X: g.currentRow, Y: g.currentCol}
+	value := g.data[pos.X][pos.Y]
 	g.currentCol++
-	if g.currentCol > g.cols {
+	if g.currentCol >= g.cols {
 		g.currentRow++
 		g.currentCol = 0
 	}
-
 	return value, pos
 }
 
@@ -93,7 +94,7 @@ func (g *Grid[T]) Copy() Grid[T] {
 		}
 	}
 
-	return NewGrid[T](data)
+	return NewGridFromElements[T](data)
 }
 
 func (g *Grid[T]) Set(el T, pos Point) {

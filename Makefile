@@ -8,11 +8,11 @@ help:
 	@powershell -Command "Get-Content Makefile | ForEach-Object { if ($$_ -match '^[a-zA-Z_-]+:.*?## .*$$') { $$target = $$_ -replace '^([a-zA-Z_-]+):.*?## (.*)$$', '  $$1 : $$2'; Write-Host $$target } }"
 
 build: ## Compile the Go project into a binary
-	go build -o $(BINARY_NAME) ./cmd/main.go
+	go build -o build/$(BINARY_NAME).exe ./cmd/main.go
 
 clean: ## Remove compiled binary and clean up build artifacts
 	go clean
-	@if exist $(BINARY_NAME) del $(BINARY_NAME)
+	@if exist build/$(BINARY_NAME) del build/$(BINARY_NAME)
 
 test: ## Run all tests in the project
 	go test -v ./...

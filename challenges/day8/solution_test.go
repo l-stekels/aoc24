@@ -82,7 +82,7 @@ func Test_SolvePart2(t *testing.T) {
 
 func createTestInput() SolutionInput {
 	return SolutionInput{
-		grid: common.NewGrid[rune]([][]rune{
+		grid: common.NewGridFromElements[rune]([][]rune{
 			{'.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
 			{'.', '.', '.', '.', '.', '.', '.', '.', '0', '.', '.', '.'},
 			{'.', '.', '.', '.', '.', '0', '.', '.', '.', '.', '.', '.'},

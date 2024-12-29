@@ -74,7 +74,7 @@ func Test_SolvePart2(t *testing.T) {
 
 func createTestInput() SolutionInput {
 	return SolutionInput{
-		Grid: common.NewGrid[rune]([][]rune{
+		Grid: common.NewGridFromElements[rune]([][]rune{
 			{'.', '.', '.', '.', '#', '.', '.', '.', '.', '.'},
 			{'.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
 			{'.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
